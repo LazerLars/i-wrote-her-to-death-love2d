@@ -2,16 +2,17 @@ if arg[2] == "debug" then
     require("lldebugger").start()
 end
 local maid64 = require "maid64"
-local utf8 = require("utf8")
 
+local utf8 = require("utf8")
+local playerFunctions = require("playerFunctions")
 --settings
-local tolerance = 0.01
 local screenWidth = 320
 local screenHight = 240
 
 local textInput = ""
 local text = ""
 local oldText = ""
+require "playerFunctions"
 local player = {
     health = 1,
     x = 50,
@@ -21,7 +22,6 @@ local player = {
     moveToY = 50,
     move = false;
 }
-
 
 function love.load()
     --optional settings for window
@@ -44,18 +44,10 @@ function love.load()
    
 end
 function love.update(dt)
-    --player.x = player.x + (player.speed * dt)
-    --player.y = player.y + (player.speed * dt)
-    
     --check the player stays withinscreen
-    PlayerDontExitScreen()
+    playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
-    MovePlayer(dt)
-    -- if string.find(text, "move") then
-    --     print("Found move command:", text)
-    --     local x, y = extractCoordinates(text)
-    --     moveTowards(player, x, y, dt)
-    -- end
+    playerFunctions.MovePlayer(player,dt)
 end
 function love.draw()
     
@@ -98,19 +90,51 @@ function love.keypressed(key)
     end
     if key == "return" then
         oldText = text
-        if string.find(textInput, "move") then
-            local x, y = ExtractCoordinates(textInput)
-            if type(x) == "number" and type(y) == "number" then
-                player.moveToX = x
-                player.moveToY = y
-            end
-        end
-        if string.find(textInput, 'stop') then
-            player.moveToX = player.x
-            player.moveToY = player.y
-        end
+        CheckPlayerCommands()
         text = textInput
         textInput = ""
+    end
+end
+
+function CheckPlayerCommands()
+    if string.find(textInput, "move") then
+        local x, y = ExtractCoordinates(textInput)
+        if type(x) == "number" and type(y) == "number" then
+            player.moveToX = x
+            player.moveToY = y
+        end
+    end
+    if string.find(textInput, 'stop') then
+        player.moveToX = player.x
+        player.moveToY = player.y
+    end
+    if string.find(textInput, 'move left') then
+        player.moveToX = 0
+    end
+    if string.find(textInput, 'move right') then
+        player.moveToX = screenWidth
+    end
+    if string.find(textInput, 'move up') then
+        player.moveToY = 0
+    end
+    if string.find(textInput, 'move down') then
+        player.moveToY = screenHight
+    end
+    if string.find(textInput, 'move upleft') then
+        player.moveToY = 0
+        player.moveToX = 0
+    end
+    if string.find(textInput, 'move downleft') then
+        player.moveToY = screenHight
+        player.moveToX = 0
+    end
+    if string.find(textInput, 'move upright') then
+        player.moveToY = 0
+        player.moveToX = screenWidth
+    end
+    if string.find(textInput, 'move downright') then
+        player.moveToY = screenHight
+        player.moveToX = screenWidth
     end
 end
 
@@ -135,28 +159,3 @@ function ExtractCoordinates(coordinateString)
     return tonumber(x), tonumber(y)
 end
 
-function PlayerDontExitScreen()
-    if player.x > screenWidth then
-        player.x = screenWidth - 2
-        player.moveToX = player.x
-    elseif player.x < 0 then
-        player.x = 2
-        player.moveToX = player.x
-    end
-    if player.y > screenHight then
-        player.y = screenHight - 2
-        player.moveToY = player.y
-    elseif player.y < 0 then
-        player.y = 2
-        player.moveToY = player.y
-    end
-end
-
-function MovePlayer(dt)
-    if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
-        MoveTowards(player, player.moveToX, player.moveToY, dt)
-        print('we are moving')
-        print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
-        print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
-    end
-end
