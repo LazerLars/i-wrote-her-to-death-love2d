@@ -4,10 +4,14 @@ end
 local maid64 = require "maid64"
 local utf8 = require("utf8")
 
+--settings
+local tolerance = 0.01
+local screenWidth = 320
+local screenHight = 240
+
 local textInput = ""
 local text = ""
 local oldText = ""
-local tolerance = 0.01
 local player = {
     health = 1,
     x = 50,
@@ -25,7 +29,7 @@ function love.load()
     
     --initilizing maid64 for use and set to 64x64 mode 
     --can take 2 parameters x and y if needed for example maid64.setup(64,32)
-    maid64.setup(320, 240)
+    maid64.setup(screenWidth, screenHight)
 
     font = love.graphics.newFont('pico-8-mono.ttf', 8)
     --font:setFilter('nearest', 'nearest')
@@ -43,13 +47,10 @@ function love.update(dt)
     --player.x = player.x + (player.speed * dt)
     --player.y = player.y + (player.speed * dt)
     
+    --check the player stays withinscreen
+    PlayerDontExitScreen()
     --check if we should move the player
-    if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
-        moveTowards(player, player.moveToX, player.moveToY, dt)
-        print('we are moving')
-        print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
-        print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
-    end
+    MovePlayer(dt)
     -- if string.find(text, "move") then
     --     print("Found move command:", text)
     --     local x, y = extractCoordinates(text)
@@ -98,7 +99,7 @@ function love.keypressed(key)
     if key == "return" then
         oldText = text
         if string.find(textInput, "move") then
-            local x, y = extractCoordinates(textInput)
+            local x, y = ExtractCoordinates(textInput)
             if type(x) == "number" and type(y) == "number" then
                 player.moveToX = x
                 player.moveToY = y
@@ -113,7 +114,7 @@ function love.keypressed(key)
     end
 end
 
-function moveTowards(object, targetX, targetY, dt)
+function MoveTowards(object, targetX, targetY, dt)
     local angle = math.atan2(targetY - object.y, targetX - object.x)
     
     -- Calculate the distance to the target
@@ -129,7 +130,33 @@ function moveTowards(object, targetX, targetY, dt)
 end
 
 -- Function to extract x and y values from a coordinate string
-function extractCoordinates(coordinateString)
+function ExtractCoordinates(coordinateString)
     local x, y = coordinateString:match("move (%d+),(%d+)")
     return tonumber(x), tonumber(y)
+end
+
+function PlayerDontExitScreen()
+    if player.x > screenWidth then
+        player.x = screenWidth - 2
+        player.moveToX = player.x
+    elseif player.x < 0 then
+        player.x = 2
+        player.moveToX = player.x
+    end
+    if player.y > screenHight then
+        player.y = screenHight - 2
+        player.moveToY = player.y
+    elseif player.y < 0 then
+        player.y = 2
+        player.moveToY = player.y
+    end
+end
+
+function MovePlayer(dt)
+    if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
+        MoveTowards(player, player.moveToX, player.moveToY, dt)
+        print('we are moving')
+        print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
+        print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
+    end
 end
