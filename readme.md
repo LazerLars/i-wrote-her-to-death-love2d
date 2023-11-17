@@ -1,4 +1,4 @@
-windows
+windows:
 
 REMEMBER TO SET conf.lua: 
 function love.conf(t)
