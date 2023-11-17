@@ -7,11 +7,15 @@ local utf8 = require("utf8")
 local textInput = ""
 local text = ""
 local oldText = ""
+local tolerance = 0.01
 local player = {
     health = 1,
-    x = 5,
-    y = 5,
-    speed = 50
+    x = 50,
+    y = 50,
+    speed = 50,
+    moveToX = 50,
+    moveToY = 50,
+    move = false;
 }
 
 
@@ -39,11 +43,18 @@ function love.update(dt)
     --player.x = player.x + (player.speed * dt)
     --player.y = player.y + (player.speed * dt)
     
-    if string.find(text, "move") then
-        print("Found move command:", text)
-        local x, y = extractCoordinates(text)
-        moveTowards(player, x, y, dt)
+    --check if we should move the player
+    if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
+        moveTowards(player, player.moveToX, player.moveToY, dt)
+        print('we are moving')
+        print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
+        print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
     end
+    -- if string.find(text, "move") then
+    --     print("Found move command:", text)
+    --     local x, y = extractCoordinates(text)
+    --     moveTowards(player, x, y, dt)
+    -- end
 end
 function love.draw()
     
@@ -53,10 +64,13 @@ function love.draw()
     love.graphics.rectangle('fill', player.x, player.y, 4,4)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
+    love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
     love.graphics.print('> ' .. textInput, 0, 226)
     love.graphics.setFont(font, 4)
     love.graphics.print('' .. oldText, 0, 226-14-14)
     love.graphics.print('' .. text, 0, 226-14)
+
+
 
     maid64.finish()--finishes the maid64 process
 end
@@ -83,6 +97,17 @@ function love.keypressed(key)
     end
     if key == "return" then
         oldText = text
+        if string.find(textInput, "move") then
+            local x, y = extractCoordinates(textInput)
+            if type(x) == "number" and type(y) == "number" then
+                player.moveToX = x
+                player.moveToY = y
+            end
+        end
+        if string.find(textInput, 'stop') then
+            player.moveToX = player.x
+            player.moveToY = player.y
+        end
         text = textInput
         textInput = ""
     end
