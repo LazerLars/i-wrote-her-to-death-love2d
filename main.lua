@@ -23,6 +23,14 @@ local player = {
     move = false;
 }
 
+local enemy = {
+    x = 10,
+    y = 10,
+    health = 1,
+    speed = 20,
+    word = 'boom'
+}
+
 function love.load()
     --optional settings for window
     love.window.setMode(800, 600, {resizable=true, vsync=false, minwidth=200, minheight=200})
@@ -48,12 +56,15 @@ function love.update(dt)
     playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
     playerFunctions.MovePlayer(player,dt)
+
+    MoveTowards(enemy, player.x, player.y, dt)
 end
 function love.draw()
     
     maid64.start()--starts the maid64 process
 
     --draw images here
+    love.graphics.setColor(255/255, 163/255, 0/255)
     love.graphics.rectangle('fill', player.x, player.y, 4,4)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
@@ -63,6 +74,11 @@ function love.draw()
     love.graphics.print('' .. oldText, 0, 226-14-14)
     love.graphics.print('' .. text, 0, 226-14)
 
+    love.graphics.setColor(255/255, 119/255, 168/255)
+    love.graphics.rectangle('fill', enemy.x, enemy.y, 6,6)
+    love.graphics.setColor(241/255, 173/255, 255/255)
+    love.graphics.print(enemy.word, enemy.x - 10, enemy.y -10)
+    --love.graphics.setColor(love.math.colorFromBytes(5, 234, 255))
 
 
     maid64.finish()--finishes the maid64 process
@@ -159,3 +175,16 @@ function ExtractCoordinates(coordinateString)
     return tonumber(x), tonumber(y)
 end
 
+function spawnEnemy()
+    local enemy = {
+        x = 10,
+        y = 10,
+        health = 1,
+        word = 'boom'
+    }
+    return enemy
+end
+
+function drawEnemy(enemy)
+
+end
