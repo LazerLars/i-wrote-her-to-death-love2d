@@ -52,6 +52,7 @@ function love.load()
    
 end
 function love.update(dt)
+
     --check the player stays withinscreen
     playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
@@ -172,7 +173,15 @@ end
 -- Function to extract x and y values from a coordinate string
 function ExtractCoordinates(coordinateString)
     local x, y = coordinateString:match("move (%d+),(%d+)")
-    return tonumber(x), tonumber(y)
+    
+    -- Check if the pattern matched successfully
+    if x and y then
+        return tonumber(x), tonumber(y)
+    else
+        -- If the pattern didn't match, handle the error
+        print("Error: Invalid coordinate string format. Expected 'move x,y'")
+        return nil, nil
+    end
 end
 
 function spawnEnemy()
@@ -187,4 +196,11 @@ end
 
 function drawEnemy(enemy)
 
+end
+
+function love.mousepressed(x, y, button, istouch)
+    if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+        player.moveToX = maid64.mouse.getX()
+        player.moveToY = maid64.mouse.getY()
+    end
 end

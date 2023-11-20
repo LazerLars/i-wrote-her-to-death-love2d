@@ -22,13 +22,18 @@ function PlayerDontExitScreen(player)
 end
 
 function MovePlayer(player, dt)
-    if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
-        MoveTowards(player, player.moveToX, player.moveToY, dt)
-        print('we are moving')
-        print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
-        print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
+    if player.moveToX and player.moveToY then
+        if math.abs(player.moveToX - player.x) > tolerance or math.abs(player.moveToY - player.y) > tolerance then
+            MoveTowards(player, player.moveToX, player.moveToY, dt)
+            --print('we are moving')
+            --print('x: from ' .. math.floor(player.x) .. ' to ' .. math.floor(player.moveToX))
+            --print('y: from ' .. math.floor(player.y) .. ' to ' .. math.floor(player.moveToY))
+        end
+    else
+        print('Error: moveToX or moveToY is nil')
     end
 end
+
 
 return {
     PlayerDontExitScreen = PlayerDontExitScreen,
