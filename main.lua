@@ -33,7 +33,7 @@ local enemy = {
 
 function love.load()
     --optional settings for window
-    love.window.setMode(800, 600, {resizable=true, vsync=false, minwidth=200, minheight=200})
+    love.window.setMode(1024, 768, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
     --initilizing maid64 for use and set to 64x64 mode 
     --can take 2 parameters x and y if needed for example maid64.setup(64,32)
