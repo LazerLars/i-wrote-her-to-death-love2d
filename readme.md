@@ -11,3 +11,6 @@ in the main.lua:
 if arg[2] == "debug" then
     require("lldebugger").start()
 end
+
+Option + 8 / 9 = []
+option + shift + 8 / 9 = {}

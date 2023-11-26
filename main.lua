@@ -31,7 +31,10 @@ local enemy = {
     word = 'boom'
 }
 
+local enemyList = {}
+
 function love.load()
+    print("lets go")
     --optional settings for window
     love.window.setMode(1024, 768, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
@@ -59,6 +62,9 @@ function love.update(dt)
     playerFunctions.MovePlayer(player,dt)
 
     MoveTowards(enemy, player.x, player.y, dt)
+    for index, value in ipairs(enemyList) do
+        MoveTowards(value, player.x, player.y, dt)
+    end
 end
 function love.draw()
     
@@ -77,6 +83,14 @@ function love.draw()
 
     love.graphics.setColor(255/255, 119/255, 168/255)
     love.graphics.rectangle('fill', enemy.x, enemy.y, 6,6)
+    --draw enemies
+    for index, value in ipairs(enemyList) do
+        love.graphics.setColor(255/255, 119/255, 168/255)
+        love.graphics.rectangle('fill', value.x, value.y, 6,6)
+        love.graphics.setColor(241/255, 173/255, 255/255)
+        love.graphics.print(value.word, value.x - 10, value.y -10)
+    end
+    
     love.graphics.setColor(241/255, 173/255, 255/255)
     love.graphics.print(enemy.word, enemy.x - 10, enemy.y -10)
     --love.graphics.setColor(love.math.colorFromBytes(5, 234, 255))
@@ -110,6 +124,10 @@ function love.keypressed(key)
         CheckPlayerCommands()
         text = textInput
         textInput = ""
+    end
+    if key == "." then
+        SpawnEnemy()
+        print(#enemyList)
     end
 end
 
@@ -184,15 +202,19 @@ function ExtractCoordinates(coordinateString)
     end
 end
 
-function spawnEnemy()
+function SpawnEnemy()
     local enemy = {
-        x = 10,
-        y = 10,
+        x = math.random(1,320),
+        y = math.random(1,240),
         health = 1,
-        word = 'boom'
+        word = 'boom' .. math.random(1,200),
+        speed = math.random(10,30)
     }
-    return enemy
+    table.insert(enemyList, enemy)
+    --return enemy
 end
+
+
 
 function drawEnemy(enemy)
 
