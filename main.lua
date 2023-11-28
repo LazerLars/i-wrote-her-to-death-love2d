@@ -5,6 +5,8 @@ local maid64 = require "maid64"
 
 local utf8 = require("utf8")
 local playerFunctions = require("playerFunctions")
+local enemyFunctions = require("enemyFunctions")
+
 --settings
 local screenWidth = 320
 local screenHight = 240
@@ -12,7 +14,7 @@ local screenHight = 240
 local textInput = ""
 local text = ""
 local oldText = ""
-require "playerFunctions"
+
 local player = {
     health = 1,
     x = 50,
@@ -24,13 +26,6 @@ local player = {
 }
 
 
---ENEMY SETTINGS
-local enemyList = {}
-local enemySpawnTimer = 5
-local prevSpawnTime = 0
-local spawnTimeDecliner = 5
-local prevDecilineTime = 0
---------------------------
 
 function love.load()
     print("lets go")
@@ -53,7 +48,7 @@ function love.load()
     love.keyboard.setKeyRepeat(true)
 
     --spawn first enemy
-    SpawnEnemy()
+    enemyFunctions.SpawnEnemy()
    
 end
 
@@ -64,7 +59,7 @@ function love.update(dt)
     --check if we should move the player
     playerFunctions.MovePlayer(player,dt)
     
-    ManageEnemies(dt)
+    enemyFunctions.ManageEnemies(player,dt)
     -- MoveTowards(enemy, player.x, player.y, dt)
     -- for index, value in ipairs(enemyList) do
     --     MoveTowards(value, player.x, player.y, dt)
@@ -86,12 +81,7 @@ function love.draw()
     love.graphics.print('' .. text, 0, 226-14)
 
     --draw enemies
-    for index, value in ipairs(enemyList) do
-        love.graphics.setColor(255/255, 119/255, 168/255)
-        love.graphics.rectangle('fill', value.x, value.y, 6,6)
-        love.graphics.setColor(241/255, 173/255, 255/255)
-        love.graphics.print(value.word, value.x - 10, value.y -10)
-    end
+    enemyFunctions.DrawEnemies()
     
 
     --love.graphics.setColor(love.math.colorFromBytes(5, 234, 255))
@@ -127,8 +117,7 @@ function love.keypressed(key)
         textInput = ""
     end
     if key == "." then
-        SpawnEnemy()
-        print(#enemyList)
+        playerFunctions.SpawnEnemy()
     end
 end
 
@@ -203,18 +192,6 @@ function ExtractCoordinates(coordinateString)
     end
 end
 
-function SpawnEnemy()
-    local enemy = {
-        x = math.random(1,320),
-        y = math.random(1,240),
-        health = 1,
-        word = 'boom' .. math.random(1,200),
-        speed = math.random(10,30)
-    }
-    table.insert(enemyList, enemy)
-    --return enemy
-end
-
 
 function love.mousepressed(x, y, button, istouch)
     if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
@@ -224,30 +201,3 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 
---Adding enemies, used in the upadte function
-function ManageEnemies(dt)
-    local currentTime = love.timer.getTime()
-        local updatedSpawnTime = false
-      
-        -- Spawn enemy every nth second
-        if currentTime - prevSpawnTime >= enemySpawnTimer then
-            print(enemySpawnTimer .. " has passed. Spawn enemy")
-            prevSpawnTime = currentTime
-            SpawnEnemy()
-            updatedSpawnTime = true
-        end
-      
-        -- Decrement spawn time if necessary
-        if enemySpawnTimer > 0.5 and not updatedSpawnTime then
-            if currentTime - prevDecilineTime >= spawnTimeDecliner then
-                prevDecilineTime = currentTime
-                enemySpawnTimer = enemySpawnTimer - 0.5
-                print('Decline spawn time with 0.5, new spawn time: ' .. enemySpawnTimer)
-            end
-        end
-      
-        -- Move enemies towards the player
-        for index, value in ipairs(enemyList) do
-          MoveTowards(value, player.x, player.y, dt)
-        end
-    end
