@@ -27,11 +27,16 @@ local enemy = {
     x = 10,
     y = 10,
     health = 1,
-    speed = 20,
+    speed = 25,
     word = 'boom'
 }
 
 local enemyList = {}
+local enemySpawnTimer = 5
+local prevSpawnTime = 0
+local spawnTimeDecliner = 5
+local prevDecilineTime = 0
+
 
 function love.load()
     print("lets go")
@@ -54,17 +59,45 @@ function love.load()
     love.keyboard.setKeyRepeat(true)
    
 end
+function ManageEnemies(dt)
+    local currentTime = love.timer.getTime()
+    local updatedSpawnTime = false
+  
+    -- Spawn enemy every nth second
+    if currentTime - prevSpawnTime >= enemySpawnTimer then
+        print(enemySpawnTimer .. " has passed. Spawn enemy")
+        prevSpawnTime = currentTime
+        SpawnEnemy()
+        updatedSpawnTime = true
+    end
+  
+    -- Decrement spawn time if necessary
+    if enemySpawnTimer > 0.5 and not updatedSpawnTime then
+        if currentTime - prevDecilineTime >= spawnTimeDecliner then
+            prevDecilineTime = currentTime
+            enemySpawnTimer = enemySpawnTimer - 0.5
+            print('Decline spawn time with 0.5, new spawn time: ' .. enemySpawnTimer)
+        end
+    end
+  
+    -- Move enemies towards the player
+    MoveTowards(enemy, player.x, player.y, dt)
+    for index, value in ipairs(enemyList) do
+      MoveTowards(value, player.x, player.y, dt)
+    end
+end
 function love.update(dt)
-
+    
     --check the player stays withinscreen
     playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
     playerFunctions.MovePlayer(player,dt)
-
-    MoveTowards(enemy, player.x, player.y, dt)
-    for index, value in ipairs(enemyList) do
-        MoveTowards(value, player.x, player.y, dt)
-    end
+    
+    ManageEnemies(dt)
+    -- MoveTowards(enemy, player.x, player.y, dt)
+    -- for index, value in ipairs(enemyList) do
+    --     MoveTowards(value, player.x, player.y, dt)
+    -- end
 end
 function love.draw()
     
