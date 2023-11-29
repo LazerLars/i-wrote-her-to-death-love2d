@@ -29,8 +29,9 @@ function ManageEnemies(player,dt)
         end
       
         -- Move enemies towards the player
-        for index, value in ipairs(enemyList) do
-          MoveTowards(value, player.x, player.y, dt)
+        for index, enemyObj in ipairs(enemyList) do
+          --MoveTowards(enemyObj, player.x, player.y, dt)
+          MoveTowardsObject(enemyObj, player)
         end
     end
 

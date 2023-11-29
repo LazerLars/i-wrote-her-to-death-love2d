@@ -17,18 +17,21 @@ local oldText = ""
 
 local player = {
     health = 1,
-    x = 50,
-    y = 50,
+    x = screenWidth /2,
+    y = screenHight/2,
     speed = 50,
-    moveToX = 50,
-    moveToY = 50,
+    moveToX = screenWidth /2,
+    moveToY = screenHight/2,
     move = false;
 }
 
-
+local tablesByFirstLetter = {}
+local filename = "texts/10kMostCommonEngWords.txt"
 
 function love.load()
     print("lets go")
+    ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
+    PrintAllWordsStartingWithLetter("p")
     --optional settings for window
     love.window.setMode(1024, 768, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
@@ -54,6 +57,7 @@ end
 
 function love.update(dt)
     
+    
     --check the player stays withinscreen
     playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
@@ -68,7 +72,7 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-
+    
     --draw images here
     love.graphics.setColor(255/255, 163/255, 0/255)
     love.graphics.rectangle('fill', player.x, player.y, 4,4)
@@ -82,10 +86,6 @@ function love.draw()
 
     --draw enemies
     enemyFunctions.DrawEnemies()
-    
-
-    --love.graphics.setColor(love.math.colorFromBytes(5, 234, 255))
-
 
     maid64.finish()--finishes the maid64 process
 end
@@ -163,6 +163,7 @@ function CheckPlayerCommands()
     end
 end
 
+--simple movetowards function
 function MoveTowards(object, targetX, targetY, dt)
     local angle = math.atan2(targetY - object.y, targetX - object.x)
     
@@ -177,6 +178,36 @@ function MoveTowards(object, targetX, targetY, dt)
     object.x = newX
     object.y = newY
 end
+--smooth movetowards function
+function MoveTowardsObject(object, target)
+    -- Calculate the difference between object and target positions
+    local dx = target.x - object.x
+    local dy = target.y - object.y
+  
+    -- Normalize the difference vector to get the direction vector
+    local distance = math.sqrt(dx * dx + dy * dy)
+    local directionX = dx / distance
+    local directionY = dy / distance
+  
+    -- Determine the speed based on the desired smoothness
+    local speed = object.speed -- Adjust this value to control the movement speed
+  
+    -- Limit the speed to avoid overshooting
+    local maxSpeed = speed * love.timer.getDelta()
+    local speedX = math.min(maxSpeed, math.abs(directionX) * speed)
+    local speedY = math.min(maxSpeed, math.abs(directionY) * speed)
+  
+    -- Update the object's position
+    object.x = object.x + speedX * directionX
+    object.y = object.y + speedY * directionY
+  
+    -- Check if the object has reached the target
+    if math.abs(dx) < 0.1 and math.abs(dy) < 0.1 then
+      return false
+    end
+  
+    return true
+  end
 
 -- Function to extract x and y values from a coordinate string
 function ExtractCoordinates(coordinateString)
@@ -201,3 +232,46 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 
+function ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
+    -- Open the file in read mode
+    local file, err = io.open(filename, "r")
+
+    -- Check for errors
+    if not file then
+        error("Error opening file: " .. err)
+    end
+
+    -- Read lines and sort them into tables by first letter
+    for line in file:lines() do
+        -- Split the line into words
+        local words = {}
+        for word in line:gmatch("%S+") do
+            table.insert(words, word)
+        end
+
+        -- Sort words into tables based on the first letter
+        for _, word in ipairs(words) do
+            local firstLetter = word:sub(1, 1):lower() -- Assuming case-insensitive sorting
+
+            -- Create a table for the letter if it doesn't exist
+            if not tablesByFirstLetter[firstLetter] then
+                tablesByFirstLetter[firstLetter] = {}
+            end
+
+            -- Insert the word into the corresponding table
+            table.insert(tablesByFirstLetter[firstLetter], word)
+        end
+    end
+
+    -- Close the file
+    file:close()
+
+    -- Print the tables (for verification)
+end
+
+function PrintAllWordsStartingWithLetter(startLetter)
+    --print("Words starting with '" .. letter .. "': " .. table.concat(tablesByFirstLetter[letter], ", "))
+    for index, value in ipairs(tablesByFirstLetter[startLetter]) do
+        print(index .. " " .. value)
+    end
+end
