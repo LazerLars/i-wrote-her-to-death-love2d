@@ -1,4 +1,3 @@
-
 you
 I
 to
@@ -4720,10 +4719,8 @@ made-up
 magnitude
 manufacture
 manufacturer
-March
 married
 mathematics
-May
 meadow
 means
 measurement
@@ -6782,8 +6779,6 @@ jackal
 jolly
 jubilee
 judicial
-judicial
-junction
 juggle
 justification
 languish
@@ -6916,7 +6911,6 @@ rein
 relapse
 relent
 reluctance
-reluctance
 remnant
 render
 repetition
@@ -6987,7 +6981,6 @@ staple
 starch
 starvation
 stingy
-strategic
 stub
 sturgeon
 subdue
@@ -8105,7 +8098,6 @@ idol
 fungus
 extraction
 explorer
-eighty
 chimera
 cheery
 cadet
@@ -8400,7 +8392,6 @@ whimper
 whirlpool
 willow
 wistful
-wistful
 wreath
 wrest
 wriggle
@@ -8454,7 +8445,6 @@ bristle
 brittle
 broth
 buck
-buckle
 bulging
 callous
 caprize
@@ -8862,7 +8852,6 @@ reap
 rebuff
 rebuke
 recline
-recognition
 recompense
 reconnaissance
 refrain
@@ -8987,7 +8976,6 @@ stutter
 subdivide
 subside
 subsist
-substance
 suede
 sulk
 sullen
@@ -9019,7 +9007,6 @@ yap
 yelp
 yoke
 yowl
-abattoir
 abattoir
 abbot
 abed
@@ -9066,7 +9053,6 @@ acheless
 achy
 acne
 acquisition
-actual
 adaptation
 addressee
 adept
@@ -9141,7 +9127,6 @@ appraisal
 approbation
 aptitude
 aptly
-archaic
 archery
 archly
 ardently
@@ -9215,7 +9200,6 @@ benevolence
 benevolent
 benignity
 berth
-berth
 beset
 bestial
 bestiality
@@ -9261,7 +9245,6 @@ candour
 capacious
 captivate
 carbohydrate
-carbon
 carious
 carnivorous
 cast iron
@@ -9313,7 +9296,6 @@ coefficient
 cogitate
 cognate
 cognizance
-cognizance
 cohabit
 cohere
 cohort
@@ -9330,9 +9312,6 @@ compulsion
 concealment
 concede
 concourse
-concourse
-concur
-concur
 concur
 concurrence
 condiment
@@ -9364,7 +9343,6 @@ daughter-in-law
 daunt
 dauntless
 Daydream
-daydream
 debark
 debatable
 debauch
@@ -9402,7 +9380,6 @@ dilution
 diminution
 dimness
 dingy
-dipping
 directness
 dirtiness
 disability
@@ -9428,8 +9405,6 @@ disreputable
 dissemble
 dissimilar
 distasteful
-distraction
-diverse
 diverse
 divert
 divinity
@@ -9683,7 +9658,6 @@ libellous
 likeable
 likelihood
 limelight
-limelight
 limitless
 lineal
 linear
@@ -9724,7 +9698,6 @@ mildness
 mileage
 milestone
 minder
-mindless
 minefield
 misfire
 misfortune
@@ -9754,7 +9727,6 @@ nightfall
 nightingale
 noiseless
 nomad
-nomad
 nonchalance
 nonpareil
 nosebleed
@@ -9780,7 +9752,6 @@ occurrence
 octopus
 offender
 offset
-old-fashioned
 ominous
 omnipotent
 omnipresent
@@ -9789,7 +9760,6 @@ onefold
 onerous
 open-air
 open-minded
-opinionated
 opinionated
 oppression
 orb
@@ -9895,7 +9865,6 @@ precursor
 predestination
 predestine
 premonition
-preparation
 prepay
 prepense
 prevalent
@@ -9912,8 +9881,6 @@ profess
 progeny
 prohibition
 projection
-propel
-prosperity
 prosperity
 provisional
 prowess
@@ -9944,7 +9911,6 @@ rarity
 rasp
 ravenous
 rebellion
-rebuff
 recant
 recast
 recede
@@ -9952,23 +9918,16 @@ reseptive
 recipient
 reciprocal
 recite
-reckon
-rectangle
 rectification
 recuperate
 recurrent
 redden
-redeem
 redress
-reed
 reek
 referee
-reform
 refrigerate
-refuse
 regretful
 regrettable
-relapse
 reliance
 reliant
 relish
