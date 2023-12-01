@@ -49,7 +49,6 @@ function love.load()
 
     --font = love.graphics.newFont('fonts/pico-8-mono.otf', 8)
     font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
-    --font = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 12)
     --not needed when appling love.graphics.setDefaultFilter("nearest", "nearest")
     --font:setFilter('nearest', 'nearest')
 
@@ -88,7 +87,7 @@ function love.draw()
     
     --draw images here
     love.graphics.setColor(255/255, 163/255, 0/255)
-    love.graphics.rectangle('fill', player.x, player.y, 12,12)
+    love.graphics.rectangle('fill', player.x, player.y, 4,4)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
