@@ -358,8 +358,9 @@ function GetWordFromTable(index)
     return wordsTable[index]
 end
 
+--if we are at the end of the words list we want to reset the list and shuffle it 
 function CheckForEnemyCounterReset()
-    if enemyCounter >= 5 then
+    if enemyCounter >= #wordsTable then
         print('reset enemyCounter...')
         enemyCounter = 1
         AdvancedShuffle(wordsTable)
