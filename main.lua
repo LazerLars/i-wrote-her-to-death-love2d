@@ -36,6 +36,7 @@ function love.load()
     print(wordsTable[9959])
     wordsTable = Shuffle(wordsTable)
     wordsTable = AdvancedShuffle(wordsTable)
+    
     print(wordsTable[9959])
 
     --optional settings for window
@@ -69,7 +70,7 @@ end
 
 function love.update(dt)
     
-    
+    CheckForEnemyCounterReset()
     --check the player stays withinscreen
     playerFunctions.PlayerDontExitScreen(player)
     --check if we should move the player
@@ -173,6 +174,9 @@ function CheckPlayerCommands()
     if string.find(textInput, 'move downright') then
         player.moveToY = screenHight
         player.moveToX = screenWidth
+    end
+    if string.find(textInput, "clear all foes") then
+        enemyFunctions.ResetEnemyList()
     end
 end
 
@@ -341,6 +345,7 @@ function AdvancedShuffle(tbl)
     return tbl
 end
 
+--used to select word in the wordslist
 function GetEnemyCounter()
     return enemyCounter
 end
@@ -351,4 +356,15 @@ end
 
 function GetWordFromTable(index)
     return wordsTable[index]
+end
+
+function CheckForEnemyCounterReset()
+    if enemyCounter >= 5 then
+        print('reset enemyCounter...')
+        enemyCounter = 1
+        AdvancedShuffle(wordsTable)
+        Shuffle(wordsTable)
+        AdvancedShuffle(wordsTable)
+        
+    end
 end

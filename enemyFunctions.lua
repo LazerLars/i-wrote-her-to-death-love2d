@@ -66,8 +66,13 @@ function DrawEnemies()
     end
 end
 
+function ResetEnemyList()
+    enemyList = {}
+end
+
     return {
         ManageEnemies = ManageEnemies,
         SpawnEnemy = SpawnEnemy,
-        DrawEnemies = DrawEnemies
+        DrawEnemies = DrawEnemies,
+        ResetEnemyList = ResetEnemyList
     }
