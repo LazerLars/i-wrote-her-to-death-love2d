@@ -26,12 +26,16 @@ local player = {
 }
 
 local tablesByFirstLetter = {}
+local wordsTable = {}
 local filename = "texts/10kMostCommonEngWords.txt"
 
 function love.load()
     print("lets go")
-    ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
-    PrintAllWordsStartingWithLetter("p")
+    ReadTxtFileToATable(filename)
+    print(wordsTable[9959])
+    wordsTable = Shuffle(wordsTable)
+    print(wordsTable[9959])
+
     --optional settings for window
     love.window.setMode(1024, 768, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
@@ -117,7 +121,7 @@ function love.keypressed(key)
         textInput = ""
     end
     if key == "." then
-        playerFunctions.SpawnEnemy()
+        enemyFunctions.SpawnEnemy()
     end
 end
 
@@ -261,6 +265,7 @@ function ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
             -- Insert the word into the corresponding table
             table.insert(tablesByFirstLetter[firstLetter], word)
         end
+        wordsTable = words
     end
 
     -- Close the file
@@ -269,9 +274,44 @@ function ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
     -- Print the tables (for verification)
 end
 
+function ReadTxtFileToATable(filename)
+   -- Open the file in read mode
+   local file, err = io.open(filename, "r")
+
+   -- Check for errors
+   if not file then
+       error("Error opening file: " .. err)
+   end
+
+   -- Read lines and insert them into the table
+   for line in file:lines() do
+       table.insert(wordsTable, line)
+   end
+
+   -- Close the file
+   file:close()
+
+   -- Print the lines to the console (for verification)
+   for i, line in ipairs(wordsTable) do
+       print("Line " .. i .. ": " .. line)
+   end
+end
+
+
 function PrintAllWordsStartingWithLetter(startLetter)
     --print("Words starting with '" .. letter .. "': " .. table.concat(tablesByFirstLetter[letter], ", "))
     for index, value in ipairs(tablesByFirstLetter[startLetter]) do
         print(index .. " " .. value)
     end
+end
+
+-- Fisher-Yates shuffle function
+function Shuffle(tbl)
+    local len = #tbl
+    for i = len, 2, -1 do
+        math.randomseed(os.time())  -- Seed the random number generator with the current time
+        local j = math.random(i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+    return tbl
 end
