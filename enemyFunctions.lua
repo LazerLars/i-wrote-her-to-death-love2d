@@ -15,7 +15,8 @@ function ManageEnemies(player,dt)
         if currentTime - prevSpawnTime >= enemySpawnTimer then
             print(enemySpawnTimer .. " has passed. Spawn enemy")
             prevSpawnTime = currentTime
-            SpawnEnemy()
+            SpawnEnemy(GetWordFromTable(GetEnemyCounter()))
+            IncrementEnemyCounter()
             updatedSpawnTime = true
         end
       
@@ -35,12 +36,12 @@ function ManageEnemies(player,dt)
         end
     end
 
-function SpawnEnemy()
+function SpawnEnemy(word)
     local enemy = {
         x = math.random(1,320),
         y = math.random(1,240),
         health = 1,
-        word = 'boom' .. math.random(1,200),
+        word = word,
         speed = math.random(10,30)
     }
     table.insert(enemyList, enemy)
@@ -50,9 +51,18 @@ end
 function DrawEnemies()
     for index, value in ipairs(enemyList) do
         love.graphics.setColor(255/255, 119/255, 168/255)
-        love.graphics.rectangle('fill', value.x, value.y, 6,6)
+
+        --get width of word to center it later above the player
+        local enemySize = 8
+        local wordWidth = font:getWidth(value.word)  -- Assuming you have a 'font' variable set to your desired font
+
+        -- Center the square horizontally and draw it
+        love.graphics.rectangle('fill', value.x - enemySize / 2, value.y + 4, enemySize, enemySize)
+
         love.graphics.setColor(241/255, 173/255, 255/255)
-        love.graphics.print(value.word, value.x - 10, value.y -10)
+
+        -- Center the word horizontally above the square
+        love.graphics.print(value.word, value.x - wordWidth / 2, value.y - enemySize - 2)  -- Adjust the vertical offset as needed
     end
 end
 

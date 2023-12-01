@@ -28,12 +28,14 @@ local player = {
 local tablesByFirstLetter = {}
 local wordsTable = {}
 local filename = "texts/10kMostCommonEngWords.txt"
+local enemyCounter = 0
 
 function love.load()
     print("lets go")
     ReadTxtFileToATable(filename)
     print(wordsTable[9959])
     wordsTable = Shuffle(wordsTable)
+    wordsTable = AdvancedShuffle(wordsTable)
     print(wordsTable[9959])
 
     --optional settings for window
@@ -42,8 +44,13 @@ function love.load()
     --initilizing maid64 for use and set to 64x64 mode 
     --can take 2 parameters x and y if needed for example maid64.setup(64,32)
     maid64.setup(screenWidth, screenHight)
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    
 
-    font = love.graphics.newFont('pico-8-mono.ttf', 8)
+    --font = love.graphics.newFont('fonts/pico-8-mono.otf', 8)
+    font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
+    --font = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 12)
+    --not needed when appling love.graphics.setDefaultFilter("nearest", "nearest")
     --font:setFilter('nearest', 'nearest')
 
     love.graphics.setFont(font)
@@ -55,7 +62,9 @@ function love.load()
     love.keyboard.setKeyRepeat(true)
 
     --spawn first enemy
-    enemyFunctions.SpawnEnemy()
+    IncrementEnemyCounter()
+    enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
+    IncrementEnemyCounter()
    
 end
 
@@ -79,7 +88,7 @@ function love.draw()
     
     --draw images here
     love.graphics.setColor(255/255, 163/255, 0/255)
-    love.graphics.rectangle('fill', player.x, player.y, 4,4)
+    love.graphics.rectangle('fill', player.x, player.y, 12,12)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
@@ -121,7 +130,8 @@ function love.keypressed(key)
         textInput = ""
     end
     if key == "." then
-        enemyFunctions.SpawnEnemy()
+        enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
+        IncrementEnemyCounter()
     end
 end
 
@@ -305,6 +315,7 @@ function PrintAllWordsStartingWithLetter(startLetter)
     end
 end
 
+--shuffle table
 -- Fisher-Yates shuffle function
 function Shuffle(tbl)
     local len = #tbl
@@ -314,4 +325,31 @@ function Shuffle(tbl)
         tbl[i], tbl[j] = tbl[j], tbl[i]
     end
     return tbl
+end
+
+-- Advanced Fisher-Yates shuffle function
+function AdvancedShuffle(tbl)
+    local len = #tbl
+    local passes = 3  -- Adjust the number of passes as needed
+
+    for pass = 1, passes do
+        for i = len, 2, -1 do
+            local j = math.random(i)
+            tbl[i], tbl[j] = tbl[j], tbl[i]
+        end
+    end
+
+    return tbl
+end
+
+function GetEnemyCounter()
+    return enemyCounter
+end
+
+function IncrementEnemyCounter()
+    enemyCounter = enemyCounter + 1
+end
+
+function GetWordFromTable(index)
+    return wordsTable[index]
 end
