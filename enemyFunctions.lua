@@ -48,6 +48,7 @@ function SpawnEnemy(word)
     --return enemy
 end
 
+
 function DrawEnemies()
     for index, value in ipairs(enemyList) do
         love.graphics.setColor(255/255, 119/255, 168/255)
@@ -70,9 +71,14 @@ function ResetEnemyList()
     enemyList = {}
 end
 
+function GetEnemyList()
+    return enemyList
+end
+
     return {
         ManageEnemies = ManageEnemies,
         SpawnEnemy = SpawnEnemy,
         DrawEnemies = DrawEnemies,
-        ResetEnemyList = ResetEnemyList
+        ResetEnemyList = ResetEnemyList,
+        GetEnemyList = GetEnemyList
     }

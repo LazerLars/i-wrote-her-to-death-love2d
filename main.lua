@@ -14,6 +14,7 @@ local screenHight = 240
 local textInput = ""
 local text = ""
 local oldText = ""
+local CheckForEnemyWordBool = false
 
 local player = {
     health = 1,
@@ -77,6 +78,9 @@ function love.update(dt)
     playerFunctions.MovePlayer(player,dt)
     
     enemyFunctions.ManageEnemies(player,dt)
+
+    CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), textInput)
+    CheckForEnemyWordBool = false
     -- MoveTowards(enemy, player.x, player.y, dt)
     -- for index, value in ipairs(enemyList) do
     --     MoveTowards(value, player.x, player.y, dt)
@@ -128,10 +132,19 @@ function love.keypressed(key)
         CheckPlayerCommands()
         text = textInput
         textInput = ""
+        CheckForEnemyWordBool = true
     end
     if key == "." then
         enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
         IncrementEnemyCounter()
+    end
+end
+
+function CheckInputForEnemyWord(enemyList, textInput)
+    for index, enemy in ipairs(enemyList) do
+        if enemy.word == textInput then
+            print(textInput .. " located on enemey")
+        end
     end
 end
 
