@@ -32,6 +32,7 @@ local filename = "texts/10kMostCommonEngWords.txt"
 local enemyCounter = 0
 
 local bulletList = {}
+local bulletAdded = false 
 
 function love.load()
     print("lets go")
@@ -81,15 +82,15 @@ function love.update(dt)
     
     enemyFunctions.ManageEnemies(player,dt)
 
-    CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), textInput)
+    CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
     --CheckForEnemyWordBool = false
     -- MoveTowards(enemy, player.x, player.y, dt)
     -- for index, value in ipairs(enemyList) do
     --     MoveTowards(value, player.x, player.y, dt)
     -- end
-    for index, bullet in ipairs(bulletList) do
-        MoveTowardsObject(bullet, bullet.target)
-    end
+    MoveBullets()
+    -- Reset the bulletAdded flag at the beginning of each frame
+    bulletAdded = false
 end
 function love.draw()
     
@@ -108,9 +109,7 @@ function love.draw()
 
     --draw enemies
     enemyFunctions.DrawEnemies()
-    for index, bullet in ipairs(bulletList) do
-        love.graphics.rectangle('fill', bullet.x, bullet.y, 4,4)
-    end
+    DrawBullets()
     maid64.finish()--finishes the maid64 process
 end
 
@@ -149,23 +148,14 @@ end
 
 function CheckInputForEnemyWord(enemyList, textInput)
     for index, enemy in ipairs(enemyList) do
-        if enemy.word == textInput then
+        if enemy.word == textInput and not bulletAdded then
             print(textInput .. " located on enemey")
             print(enemy.x .. "," .. enemy.y)
             AddBullet(enemy)
+            bulletAdded = true
+            text = ""
         end
     end
-end
-
-function AddBullet(enemy)
-    local bullet = {
-        x = player.x,
-        y = player.y,
-        speed = 200,
-        target = enemy
-    }
-    table.insert(bulletList, bullet)
-    print('adding bullet for enemy word: ' .. enemy.word)
 end
 
 function CheckPlayerCommands()
@@ -400,5 +390,70 @@ function CheckForEnemyCounterReset()
         Shuffle(wordsTable)
         AdvancedShuffle(wordsTable)
         
+    end
+end
+
+function SetPico8ColorNumb(color)
+	local myColor = love.graphics.setColor(0/255, 0/255, 0/255)
+	if color == 1 then
+		myColor = love.graphics.setColor(255/255, 0/255, 77/255)
+	elseif color == 2 then
+		myColor = love.graphics.setColor(29/255, 43/255, 83/255	)
+	elseif color == 3 then
+		myColor = love.graphics.setColor(126/255, 37/255, 83/255)
+	elseif color == 4 then
+		myColor = love.graphics.setColor(0/255, 135/255, 81/255)
+	elseif color == 5 then
+		myColor = love.graphics.setColor(171/255, 82/255, 54/255)
+	elseif color == 6 then
+		myColor = love.graphics.setColor(95/255, 87/255, 79/255)
+	elseif color == 7 then
+		myColor = love.graphics.setColor(194/255, 195/255, 199/255)
+	elseif color == 8 then
+		myColor = love.graphics.setColor(255/255, 241/255, 232/255)
+	elseif color == 9 then
+		myColor = love.graphics.setColor(255/255, 0/255, 77/255)
+	elseif color == 10 then
+		myColor = love.graphics.setColor(255/255, 163/255, 0/255)
+	elseif color == 11 then
+		myColor = love.graphics.setColor(255/255, 236/255, 39/255)
+	elseif color == 12 then
+		myColor = love.graphics.setColor(0/255, 228/255, 54/255)
+	elseif color == 13 then
+		myColor = love.graphics.setColor(241/255, 173/255, 255/255)
+	elseif color == 14 then
+		myColor = love.graphics.setColor(131/255, 118/255, 156/255)
+	elseif color == 15 then
+		myColor = love.graphics.setColor(255/255, 119/255, 168/255)
+	elseif color == 16 then
+		myColor = love.graphics.setColor(255/255, 204/255, 170/255)
+	end
+
+	return myColor
+end
+
+function AddBullet(enemy)
+    local bullet = {
+        x = player.x,
+        y = player.y,
+        speed = 350,
+        target = enemy
+    }
+    table.insert(bulletList, bullet)
+    print('adding bullet for enemy word: ' .. enemy.word)
+end
+
+function DrawBullets()
+    print("bulletList length: " .. #bulletList)
+    for index, bullet in ipairs(bulletList) do
+        SetPico8ColorNumb(4)
+        love.graphics.rectangle('fill', bullet.x, bullet.y, 4,4)
+        love.graphics.setColor(241/255, 173/255, 255/255)
+    end
+end
+
+function MoveBullets()
+    for index, bullet in ipairs(bulletList) do
+        MoveTowardsObject(bullet, bullet.target)
     end
 end
