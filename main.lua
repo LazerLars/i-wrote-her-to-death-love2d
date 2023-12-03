@@ -31,6 +31,8 @@ local wordsTable = {}
 local filename = "texts/10kMostCommonEngWords.txt"
 local enemyCounter = 0
 
+local bulletList = {}
+
 function love.load()
     print("lets go")
     ReadTxtFileToATable(filename)
@@ -80,11 +82,14 @@ function love.update(dt)
     enemyFunctions.ManageEnemies(player,dt)
 
     CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), textInput)
-    CheckForEnemyWordBool = false
+    --CheckForEnemyWordBool = false
     -- MoveTowards(enemy, player.x, player.y, dt)
     -- for index, value in ipairs(enemyList) do
     --     MoveTowards(value, player.x, player.y, dt)
     -- end
+    for index, bullet in ipairs(bulletList) do
+        MoveTowardsObject(bullet, bullet.target)
+    end
 end
 function love.draw()
     
@@ -103,7 +108,9 @@ function love.draw()
 
     --draw enemies
     enemyFunctions.DrawEnemies()
-
+    for index, bullet in ipairs(bulletList) do
+        love.graphics.rectangle('fill', bullet.x, bullet.y, 4,4)
+    end
     maid64.finish()--finishes the maid64 process
 end
 
@@ -132,7 +139,7 @@ function love.keypressed(key)
         CheckPlayerCommands()
         text = textInput
         textInput = ""
-        CheckForEnemyWordBool = true
+        --CheckForEnemyWordBool = true
     end
     if key == "." then
         enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
@@ -144,8 +151,21 @@ function CheckInputForEnemyWord(enemyList, textInput)
     for index, enemy in ipairs(enemyList) do
         if enemy.word == textInput then
             print(textInput .. " located on enemey")
+            print(enemy.x .. "," .. enemy.y)
+            AddBullet(enemy)
         end
     end
+end
+
+function AddBullet(enemy)
+    local bullet = {
+        x = player.x,
+        y = player.y,
+        speed = 200,
+        target = enemy
+    }
+    table.insert(bulletList, bullet)
+    print('adding bullet for enemy word: ' .. enemy.word)
 end
 
 function CheckPlayerCommands()

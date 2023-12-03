@@ -42,7 +42,7 @@ function SpawnEnemy(word)
         y = math.random(1,240),
         health = 1,
         word = word,
-        speed = math.random(10,30)
+        speed = math.random(10,15)
     }
     table.insert(enemyList, enemy)
     --return enemy
