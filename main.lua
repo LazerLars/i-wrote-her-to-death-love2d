@@ -53,7 +53,8 @@ function love.load()
     
 
     --font = love.graphics.newFont('fonts/pico-8-mono.otf', 8)
-    font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
+    --font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
+    font = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 8)
     --not needed when appling love.graphics.setDefaultFilter("nearest", "nearest")
     --font:setFilter('nearest', 'nearest')
 
