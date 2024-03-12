@@ -1,5 +1,5 @@
 --ENEMY SETTINGS
-local enemyList = {}
+enemyList = {}
 local enemySpawnTimer = 5
 local prevSpawnTime = 0
 local spawnTimeDecliner = 5
@@ -73,6 +73,10 @@ end
 
 function GetEnemyList()
     return enemyList
+end
+
+function RemoveEnemy(index)
+    table.remove(enemyList, index)
 end
 
     return {
