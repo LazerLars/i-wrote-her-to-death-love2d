@@ -44,7 +44,7 @@ function love.load()
     print(wordsTable[9959])
 
     --optional settings for window
-    love.window.setMode(1024, 768, {resizable=true, vsync=false, minwidth=200, minheight=200})
+    love.window.setMode(screenWidth * 3, screenHight * 3, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
     --initilizing maid64 for use and set to 64x64 mode 
     --can take 2 parameters x and y if needed for example maid64.setup(64,32)
@@ -86,9 +86,9 @@ function love.update(dt)
     CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
     --CheckForEnemyWordBool = false
     -- MoveTowards(enemy, player.x, player.y, dt)
-    -- for index, value in ipairs(enemyList) do
-    --     MoveTowards(value, player.x, player.y, dt)
-    -- end
+    
+   CheckForCollision()
+    
     MoveBullets()
     -- Reset the bulletAdded flag at the beginning of each frame
     bulletAdded = false
@@ -456,5 +456,31 @@ end
 function MoveBullets()
     for index, bullet in ipairs(bulletList) do
         MoveTowardsObject(bullet, bullet.target)
+    end
+end
+
+function CheckForCollision()
+    for enemyIndex, enemy in ipairs(enemyList) do
+        --MoveTowards(enemy, player.x, player.y, dt)
+        print('enemyList')
+        print(enemy.x)
+        print(enemy.y)
+        for bulletIndex, bullet in ipairs(bulletList) do
+            print('bullet')
+            print(bullet.x)
+            print(bullet.y)
+            -- Calculate the tolerance for collision
+            local tolerance = 4 -- Half the width of the bullet
+            -- Check if enemy and bullet positions are colliding with tolerance
+            if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
+                -- Collision detected, remove enemy and bullet
+                table.remove(enemyList, enemyIndex)
+                
+
+                table.remove(bulletList, bulletIndex)
+                -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
+                break
+            end
+        end
     end
 end
