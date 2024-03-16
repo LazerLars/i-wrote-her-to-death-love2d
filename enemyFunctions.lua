@@ -24,7 +24,7 @@ function ManageEnemies(player,dt)
         if enemySpawnTimer > 0.5 and not updatedSpawnTime then
             if currentTime - prevDecilineTime >= spawnTimeDecliner then
                 prevDecilineTime = currentTime
-                enemySpawnTimer = enemySpawnTimer - 0.5
+                enemySpawnTimer = enemySpawnTimer - 0.2
                 print('Decline spawn time with 0.5, new spawn time: ' .. enemySpawnTimer)
             end
         end

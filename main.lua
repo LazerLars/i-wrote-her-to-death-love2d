@@ -445,7 +445,6 @@ function AddBullet(enemy)
 end
 
 function DrawBullets()
-    print("bulletList length: " .. #bulletList)
     for index, bullet in ipairs(bulletList) do
         SetPico8ColorNumb(4)
         love.graphics.rectangle('fill', bullet.x, bullet.y, 4,4)
@@ -461,22 +460,13 @@ end
 
 function CheckForCollision()
     for enemyIndex, enemy in ipairs(enemyList) do
-        --MoveTowards(enemy, player.x, player.y, dt)
-        print('enemyList')
-        print(enemy.x)
-        print(enemy.y)
         for bulletIndex, bullet in ipairs(bulletList) do
-            print('bullet')
-            print(bullet.x)
-            print(bullet.y)
             -- Calculate the tolerance for collision
             local tolerance = 4 -- Half the width of the bullet
             -- Check if enemy and bullet positions are colliding with tolerance
             if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
                 -- Collision detected, remove enemy and bullet
                 table.remove(enemyList, enemyIndex)
-                
-
                 table.remove(bulletList, bulletIndex)
                 -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
                 break
