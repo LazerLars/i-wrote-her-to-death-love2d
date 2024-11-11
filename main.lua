@@ -493,16 +493,30 @@ end
 
 function play_click_sound()
     -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
-    local sfx_click = love.audio.newSource('sfx/keyboard_click_00.wav', 'static')
-    love.audio.play(sfx_click)
-    sfx_click:play()
+    local sfx = love.audio.newSource('sfx/keyboard_click_00.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
 end
 
 function play_shotgun_sound()
     -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
-    local sfx_click = love.audio.newSource('sfx/shotgun_00.wav', 'static')
-    love.audio.play(sfx_click)
-    sfx_click:play()
+    local sfx = love.audio.newSource('sfx/shotgun_00.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
+function play_female_hurt_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/female_hurt.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
+function play_male_hurt_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/male_hurt.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
 end
 
 function randomInt(num1, num2)
