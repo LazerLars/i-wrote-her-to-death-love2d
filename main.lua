@@ -23,7 +23,8 @@ local player = {
     speed = 50,
     moveToX = screenWidth /2,
     moveToY = screenHight/2,
-    move = false;
+    move = false,
+    female = true
 }
 
 local tablesByFirstLetter = {}
@@ -205,6 +206,16 @@ function CheckPlayerCommands()
     end
     if string.find(textInput, "clear all foes") then
         enemyFunctions.ResetEnemyList()
+    end
+
+    if string.find(textInput, "settings:male") then
+        print("changing to male....")
+        player.female = false
+    end
+
+    if string.find(textInput, "settings:female") then
+        print("changing to female....")
+        player.female = true
     end
 end
 
@@ -463,12 +474,17 @@ end
 
 function CheckForCollision()
     for enemyIndex, enemy in ipairs(enemyList) do
-        playerTolerance = 2
+        playerTolerance = 4
         if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
             print("player collision lose health")
             player.health = player.health - 1
             enemy.x = enemy.x + randomInt(-100, 100)
             enemy.y = enemy.y + randomInt(-100, 100)
+            if player.female then
+                play_female_hurt_sound()
+            else
+                play_male_hurt_sound()
+            end
             break;
         end
         for bulletIndex, bullet in ipairs(bulletList) do
