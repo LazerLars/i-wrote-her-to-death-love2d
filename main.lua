@@ -316,7 +316,8 @@ end
 
 function ReadTxtFileToATable(filename)
    -- Open the file in read mode
-   local file, err = io.open(filename, "r")
+--    local file, err = io.open(filename, "r")
+    local file, err = love.filesystem.read(filename)
 
    -- Check for errors
    if not file then
@@ -324,12 +325,9 @@ function ReadTxtFileToATable(filename)
    end
 
    -- Read lines and insert them into the table
-   for line in file:lines() do
+   for line in file:gmatch("[^\r\n]+") do
        table.insert(wordsTable, line)
    end
-
-   -- Close the file
-   file:close()
 
    -- Print the lines to the console (for verification)
    for i, line in ipairs(wordsTable) do
