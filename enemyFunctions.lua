@@ -4,6 +4,8 @@ local enemySpawnTimer = 5
 local prevSpawnTime = 0
 local spawnTimeDecliner = 5
 local prevDecilineTime = 0
+
+
 --------------------------
 
 --Adding enemies, used in the upadte function
@@ -32,7 +34,18 @@ function ManageEnemies(player,dt)
         -- Move enemies towards the player
         for index, enemyObj in ipairs(enemyList) do
           --MoveTowards(enemyObj, player.x, player.y, dt)
-          MoveTowardsObject(enemyObj, player)
+            if enemyObj.knockback == false then
+                MoveTowardsObject(enemyObj, player)
+            else
+                -- enemyObj.speed = enemyObj.speed + 2
+                
+                MoveTowardsObject(enemyObj, enemyObj.knockBackTarget )
+                if math.abs(enemyObj.x - enemyObj.knockBackTarget.x) < 4 and math.abs(enemyObj.y - enemyObj.knockBackTarget.y) then
+                    enemyObj.knockback = false
+                    -- enemyObj.speed = enemyObj.orignalSpeed
+                end
+            end
+            
         end
     end
 
@@ -42,8 +55,14 @@ function SpawnEnemy(word)
         y = math.random(1,240),
         health = 1,
         word = word,
-        speed = math.random(10,15)
+        speed = math.random(10,15),
+        knockBackTarget = {
+            x=1,
+            y=1},
+        knockback = false,
+        orignalSpeed = 1
     }
+    enemy.orignalSpeed = enemy.speed
     table.insert(enemyList, enemy)
     --return enemy
 end

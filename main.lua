@@ -37,7 +37,23 @@ local filename = "texts/10kMostCommonEngWords.txt"
 local enemyCounter = 0
 
 local bulletList = {}
-local bulletAdded = false 
+local bulletAdded = false
+
+easingFunctions = {
+    linear = function(t) return t end,
+    quadraticIn = function(t) return t * t end,
+    quadraticOut = function(t) return t * (2 - t) end,
+    quadraticInOut = function(t) return t < 0.5 and 2 * t * t or -1 + (2 - t) * (2 - t) end,
+    cubicIn = function(t) return t * t * t end,
+    cubicOut = function(t) return (t - 1) * (t - 1) * (t - 1) + 1 end,
+    cubicInOut = function(t) return t < 0.5 and 4 * t * t * t or (t - 1) * (2 - t) * (2 - t) + 1 end,
+    quarticIn = function(t) return t * t * t * t end,
+    quarticOut = function(t) return 1 - (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
+    quarticInOut = function(t) return t < 0.5 and 8 * t * t * t * t or 1 - 8 * (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
+    quinticIn = function(t) return t * t * t * t * t end,
+    quinticOut = function(t) return (t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1) + 1 end,
+    quinticInOut = function(t) return t < 0.5 and 16 * t * t * t * t * t or 1 + 16 * (t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
+}
 
 function love.load()
     print("lets go")
@@ -301,6 +317,36 @@ function MoveTowardsObject(object, target)
     return true
   end
 
+  function MoveTowardsObjectEasing(object, target, easingFunction)
+    local dx = target.x - object.x
+    local dy = target.y - object.y
+    local distance = math.sqrt(dx * dx + dy * dy)
+
+    -- Normalize the direction vector
+    local directionX = dx / distance
+    local directionY = dy / distance
+
+    -- Calculate the desired movement distance
+    local desiredDistance = object.speed * love.timer.getDelta()
+
+    -- Clamp the desired distance to avoid overshooting
+    local actualDistance = math.min(distance, desiredDistance)
+
+    -- Apply the easing function to calculate the actual movement distance
+    local easedDistance = easingFunction(actualDistance / distance) * distance
+
+    -- Update the object's position
+    object.x = object.x + easedDistance * directionX
+    object.y = object.y + easedDistance * directionY
+
+    -- Check if the object has reached the target
+    if math.abs(dx) < 0.1 and math.abs(dy) < 0.1 then
+        return false
+    end
+
+    return true
+end
+
 -- Function to extract x and y values from a coordinate string
 function ExtractCoordinates(coordinateString)
     local x, y = coordinateString:match("move (%d+),(%d+)")
@@ -514,8 +560,11 @@ function CheckForCollision()
         if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
             print("player collision lose health")
             player.health = player.health - 1
-            enemy.x = enemy.x + randomInt(-100, 100)
-            enemy.y = enemy.y + randomInt(-100, 100)
+            enemy.knockback = true
+            local randomX = randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100)
+            local randomY = randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100)
+            enemy.knockBackTarget.x = enemy.knockBackTarget.x + randomX
+            enemy.knockBackTarget.y = enemy.knockBackTarget.y + randomY
             if player.female then
                 play_female_hurt_sound()
             else
