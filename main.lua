@@ -17,7 +17,7 @@ local oldText = ""
 local CheckForEnemyWordBool = false
 
 local player = {
-    health = 3,
+    health = 5,
     x = screenWidth /2,
     y = screenHight/2,
     speed = 50,
@@ -25,6 +25,10 @@ local player = {
     moveToY = screenHight/2,
     move = false,
     female = true
+}
+
+local game = {
+    pause = false
 }
 
 local tablesByFirstLetter = {}
@@ -75,25 +79,29 @@ function love.load()
 end
 
 function love.update(dt)
-    
-    CheckForEnemyCounterReset()
-    --check the player stays withinscreen
-    playerFunctions.PlayerDontExitScreen(player)
-    --check if we should move the player
-    playerFunctions.MovePlayer(player,dt)
-    
-    enemyFunctions.ManageEnemies(player,dt)
+    if game.pause then
+        local pause = 1 -- do nothing
+    else
+        CheckForEnemyCounterReset()
+        --check the player stays withinscreen
+        playerFunctions.PlayerDontExitScreen(player)
+        --check if we should move the player
+        playerFunctions.MovePlayer(player,dt)
+        
+        enemyFunctions.ManageEnemies(player,dt)
 
-    CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
-    --CheckForEnemyWordBool = false
-    -- MoveTowards(enemy, player.x, player.y, dt)
-    
-   CheckForCollision()
-    
-    MoveBullets()
-    -- Reset the bulletAdded flag at the beginning of each frame
-    bulletAdded = false
+        CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
+        --CheckForEnemyWordBool = false
+        -- MoveTowards(enemy, player.x, player.y, dt)
+        
+    CheckForCollision()
+        
+        MoveBullets()
+        -- Reset the bulletAdded flag at the beginning of each frame
+        bulletAdded = false
 end
+    end
+    
 function love.draw()
     
     maid64.start()--starts the maid64 process
@@ -104,7 +112,25 @@ function love.draw()
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     -- love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
-    love.graphics.print("Life: " .. player.health, 260,8)
+    -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
+    love.graphics.setColor(255/255, 0/255, 77/255)
+    -- Define the heart size (width and height)
+    local heart_width = 4
+    local heart_height = 4
+
+    -- Define the spacing between hearts
+    local heart_spacing = 4
+
+    for i = 1, player.health, 1 do
+        -- Calculate the x-coordinate for the current heart
+        local x = (i - 1) * (heart_width + heart_spacing) + 1
+
+        -- Draw the heart rectangle (adjust for your heart shape)
+        love.graphics.rectangle('fill', x, 4, heart_width, heart_height)
+    end
+    love.graphics.setColor(255/255, 163/255, 0/255)
+    
+    -- love.graphics.print("Life: " .. player.health, 260,8)
     love.graphics.print('> ' .. textInput, 0, 226)
     love.graphics.setFont(font, 4)
     love.graphics.print('' .. oldText, 0, 226-14-14)
@@ -216,6 +242,16 @@ function CheckPlayerCommands()
     if string.find(textInput, "settings:female") then
         print("changing to female....")
         player.female = true
+    end
+
+    
+    if string.find(textInput, "settings:pause") then
+        print("pause game....")
+        if game.pause == true then
+            game.pause = false
+        else
+            game.pause = true
+        end
     end
 end
 
