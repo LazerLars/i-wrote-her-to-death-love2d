@@ -17,7 +17,7 @@ local oldText = ""
 local CheckForEnemyWordBool = false
 
 local player = {
-    health = 1,
+    health = 3,
     x = screenWidth /2,
     y = screenHight/2,
     speed = 50,
@@ -102,7 +102,8 @@ function love.draw()
     love.graphics.rectangle('fill', player.x, player.y, 4,4)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
-    love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
+    -- love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
+    love.graphics.print("Life: " .. player.health, 260,8)
     love.graphics.print('> ' .. textInput, 0, 226)
     love.graphics.setFont(font, 4)
     love.graphics.print('' .. oldText, 0, 226-14-14)
@@ -462,6 +463,14 @@ end
 
 function CheckForCollision()
     for enemyIndex, enemy in ipairs(enemyList) do
+        playerTolerance = 2
+        if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
+            print("player collision lose health")
+            player.health = player.health - 1
+            enemy.x = enemy.x + randomInt(-100, 100)
+            enemy.y = enemy.y + randomInt(-100, 100)
+            break;
+        end
         for bulletIndex, bullet in ipairs(bulletList) do
             -- Calculate the tolerance for collision
             local tolerance = 4 -- Half the width of the bullet
@@ -494,4 +503,25 @@ function play_shotgun_sound()
     local sfx_click = love.audio.newSource('sfx/shotgun_00.wav', 'static')
     love.audio.play(sfx_click)
     sfx_click:play()
+end
+
+function randomInt(num1, num2)
+    local seed = 0
+    for i = 1, 3 do
+        seed = seed * 256 + love.timer.getTime() * 1000 % 256
+    end
+    math.randomseed(seed)
+
+    local numb = math.random(num1,num2)
+
+    numb = math.random(num1,num2)
+    numb = math.random(num1,num2)
+    numb = math.random(num1,num2)
+    numb = math.random(num1,num2)
+    numb = math.random(num1,num2)
+    
+
+    numb = math.ceil(numb)
+
+    return numb
 end
