@@ -1,3 +1,7 @@
+sounds from Freesound.org
+Vintage Keyboard 3 by jim-ph -- https://freesound.org/s/194797/ -- License: Creative Commons 0
+Shotgun Shot sfx by lumikon -- https://freesound.org/s/564480/ -- License: Creative Commons 0
+
 windows:::
 
 REMEMBER TO SET conf.lua: 

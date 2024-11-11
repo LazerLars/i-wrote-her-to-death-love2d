@@ -121,10 +121,12 @@ end
 
 function love.textinput(t)
     textInput = textInput .. t
+    play_click_sound()
 end
 
 function love.keypressed(key)
     if key == "backspace" then
+        play_click_sound()
         -- get the byte offset to the last UTF-8 character in the string.
         local byteoffset = utf8.offset(textInput, -1)
 
@@ -135,6 +137,7 @@ function love.keypressed(key)
         end
     end
     if key == "return" then
+        play_shotgun_sound()
         oldText = text
         CheckPlayerCommands()
         text = textInput
@@ -152,7 +155,7 @@ function CheckInputForEnemyWord(enemyList, textInput)
         if enemy.word == textInput and not bulletAdded then
             print(textInput .. " located on enemey")
             print(enemy.x .. "," .. enemy.y)
-            AddBullet(enemy)
+            AddBullet(enemy, textInput)
             bulletAdded = true
             text = ""
         end
@@ -433,12 +436,13 @@ function SetPico8ColorNumb(color)
 	return myColor
 end
 
-function AddBullet(enemy)
+function AddBullet(enemy, textInput)
     local bullet = {
         x = player.x,
         y = player.y,
         speed = 350,
-        target = enemy
+        target = enemy,
+        word = textInput
     }
     table.insert(bulletList, bullet)
     print('adding bullet for enemy word: ' .. enemy.word)
@@ -465,12 +469,31 @@ function CheckForCollision()
             local tolerance = 4 -- Half the width of the bullet
             -- Check if enemy and bullet positions are colliding with tolerance
             if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
-                -- Collision detected, remove enemy and bullet
-                table.remove(enemyList, enemyIndex)
-                table.remove(bulletList, bulletIndex)
-                -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
-                break
+                -- print(enemy.word)
+                -- print(bullet.word)
+                -- we need to check if the bullet word and the enemy word is the same before removing it. else we risk a bullet kills a wrong enemy
+                if enemy.word == bullet.word then
+                    -- Collision detected, remove enemy and bullet
+                    table.remove(enemyList, enemyIndex)
+                    table.remove(bulletList, bulletIndex)
+                    -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
+                    break
+                end
             end
         end
     end
+end
+
+function play_click_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx_click = love.audio.newSource('sfx/keyboard_click_00.wav', 'static')
+    love.audio.play(sfx_click)
+    sfx_click:play()
+end
+
+function play_shotgun_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx_click = love.audio.newSource('sfx/shotgun_00.wav', 'static')
+    love.audio.play(sfx_click)
+    sfx_click:play()
 end
