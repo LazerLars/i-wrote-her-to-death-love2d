@@ -584,14 +584,10 @@ function CheckForCollision()
             
         end
         for bulletIndex, bullet in ipairs(bulletList) do
-            -- Calculate the tolerance for collision
-            local tolerance = 4 -- Half the width of the bullet
-            -- Check if enemy and bullet positions are colliding with tolerance
-            -- if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
+           
             if isColliding(enemy, bullet) then
                 -- print(enemy.word)
                 -- print(bullet.word)
-                -- we need to check if the bullet word and the enemy word is the same before removing it. else we risk a bullet kills a wrong enemy
                 if enemy.word == bullet.word then
                     -- Collision detected, remove enemy and bullet
                     table.remove(enemyList, enemyIndex)
@@ -612,6 +608,13 @@ function play_click_sound()
 end
 
 function play_shotgun_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/shotgun_01.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
+function play_shotgun_with_reload_sound()
     -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
     local sfx = love.audio.newSource('sfx/shotgun_00.wav', 'static')
     love.audio.play(sfx)
