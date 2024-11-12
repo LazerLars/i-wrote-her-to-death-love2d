@@ -195,7 +195,9 @@ function love.keypressed(key)
         end
     end
     if key == "return" then
-        play_shotgun_sound()
+        if textInput ~= ":reload" then
+            play_shotgun_sound()
+        end
         oldText = text
         CheckPlayerCommands()
         text = textInput
@@ -274,6 +276,12 @@ function CheckPlayerCommands()
     if string.find(textInput, "settings:female") then
         print("changing to female....")
         player.female = true
+    end
+
+    
+    if string.find(textInput, ":reload") then
+        print("changing to female....")
+        play_shotgun_reload_sound()
     end
 
     
@@ -635,6 +643,20 @@ function play_shotgun_with_reload_sound()
     sfx:play()
 end
 
+function play_shell_drop_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/shotgun_shell_drop.waw', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
+function play_shotgun_reload_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/shotgun_reload.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
 function play_female_hurt_sound()
     -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
     local sfx = love.audio.newSource('sfx/female_hurt.wav', 'static')
@@ -723,7 +745,7 @@ function explosion_draw()
     -- love.graphics.setColor(1, 1, 1, 1) -- Reset color to default
 end
 
--- Function to create a shell at the player's position with opposite bullet direction
+-- Function to create a shell at the player's position, moving in the opposite direction of the bullet
 function ejectShell(player, bullet)
     local angle = calculateAngle(player, bullet.target) + math.pi -- Opposite direction of bullet
     local speed = shellSettings.speed
@@ -779,5 +801,4 @@ function shells_draw()
         love.graphics.pop()
     end
     love.graphics.setColor(241/255, 173/255, 255/255)
-
 end
