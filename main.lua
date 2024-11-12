@@ -66,6 +66,18 @@ local shellSettings = {
     rotationSpeed = math.pi / 4     -- Rotation speed of the shell
 }
 
+-- Variables for score and effects
+local score = 0
+local scoreEffect = {
+    scale = 1,              -- Current scale of the score text (for scaling effect)
+    scaleSpeed = 1.5,       -- Speed at which it grows/shrinks
+    shakeIntensity = 5,     -- Intensity of shake in pixels
+    duration = 0.3,         -- Duration of the effect
+    timer = 0,              -- Timer for controlling effect duration
+    type = nil              -- Current effect type: "scale" or "shake"
+}
+
+
 function love.load()
     print("lets go")
     ReadTxtFileToATable(filename)
@@ -127,6 +139,8 @@ function love.update(dt)
         shells_update(dt)
 
         explosion_update(dt)
+
+        score_update(dt)
         -- Reset the bulletAdded flag at the beginning of each frame
         bulletAdded = false
 end
@@ -141,7 +155,7 @@ function love.draw()
     love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
-    love.graphics.print(score, 260,8)
+    
     -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
     love.graphics.setColor(255/255, 0/255, 77/255)
     -- Define the heart size (width and height)
@@ -171,6 +185,8 @@ function love.draw()
     explosion_draw()
     DrawBullets()
     shells_draw()
+    score_draw()
+
     maid64.finish()--finishes the maid64 process
 end
 
@@ -616,7 +632,15 @@ function CheckForCollision()
                     table.remove(enemyList, enemyIndex)
                     table.remove(bulletList, bulletIndex)
                     createExplosion(enemy.x, enemy.y)
-                    score = score + 1
+                    -- score = score + 1
+                    -- randomScoreEffect = randomInt(1,50)
+                    -- if randomScoreEffect >= 25 then
+                    --     addScore(10, 'shake')
+                    -- else
+                    --     addScore(10, 'scale')
+                    -- end
+                    addScore(10, (randomInt(1,50) >= 25) and 'shake' or 'scale')
+
                     -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
                     break
                 end
@@ -804,4 +828,57 @@ function shells_draw()
         love.graphics.pop()
     end
     love.graphics.setColor(241/255, 173/255, 255/255)
+end
+
+-- Function to increase the score with a specified effect type
+function addScore(amount, effectType)
+    score = score + amount
+    scoreEffect.type = effectType  -- Set the current effect type
+    scoreEffect.timer = scoreEffect.duration  -- Reset the timer
+
+    if effectType == "scale" then
+        scoreEffect.scale = 1.5    -- Start larger for scaling effect
+    elseif effectType == "shake" then
+        scoreEffect.scale = 1      -- Reset scale if switching from "scale" to "shake"
+    end
+end
+
+function score_update(dt)
+    if scoreEffect.timer > 0 then
+        scoreEffect.timer = scoreEffect.timer - dt
+
+        -- Handle scaling effect
+        if scoreEffect.type == "scale" then
+            -- Smoothly reduce scale back to 1
+            scoreEffect.scale = scoreEffect.scale - scoreEffect.scaleSpeed * dt
+            if scoreEffect.scale < 1 then
+                scoreEffect.scale = 1  -- Ensure scale doesn’t go below 1
+            end
+
+        -- Handle shake effect
+        elseif scoreEffect.type == "shake" then
+            -- Shake effect doesn’t modify scale, just offsets in draw
+        end
+    else
+        scoreEffect.type = nil  -- Reset effect type when timer is finished
+        scoreEffect.scale = 1   -- Ensure scale returns to 1 when effect ends
+    end
+end
+
+function score_draw()
+    
+    local x, y = 260, 8             -- Position for the score
+
+    -- Apply scale and/or shake effect if active
+    local scaleX, scaleY = scoreEffect.scale, scoreEffect.scale
+    if scoreEffect.type == "shake" then
+        x = x + math.random(-scoreEffect.shakeIntensity, scoreEffect.shakeIntensity)
+        y = y + math.random(-scoreEffect.shakeIntensity, scoreEffect.shakeIntensity)
+    end
+
+    -- Adjust position for scaling to keep text centered
+    local offsetX = (1 - scaleX) * 20
+    local offsetY = (1 - scaleY) * 10
+
+    love.graphics.print(score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
 end
