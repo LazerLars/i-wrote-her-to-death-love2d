@@ -42,6 +42,7 @@ function ManageEnemies(player,dt)
                 MoveTowardsObject(enemyObj, enemyObj.knockBackTarget )
                 if math.abs(enemyObj.x - enemyObj.knockBackTarget.x) < 4 and math.abs(enemyObj.y - enemyObj.knockBackTarget.y) then
                     enemyObj.knockback = false
+                    enemyObj.canHurt = true
                     -- enemyObj.speed = enemyObj.orignalSpeed
                 end
             end
@@ -61,7 +62,8 @@ function SpawnEnemy(word)
             y=1},
         knockback = false,
         knockbackSpeed = 20,
-        orignalSpeed = 1
+        orignalSpeed = 1,
+        canHurt = true
     }
     enemy.orignalSpeed = enemy.speed
     table.insert(enemyList, enemy)

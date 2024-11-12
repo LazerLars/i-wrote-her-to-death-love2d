@@ -17,6 +17,8 @@ local oldText = ""
 local CheckForEnemyWordBool = false
 
 local player = {
+    width = 8,
+    height = 8,
     health = 5,
     x = screenWidth /2,
     y = screenHight/2,
@@ -95,6 +97,7 @@ function love.load()
 end
 
 function love.update(dt)
+
     if game.pause then
         local pause = 1 -- do nothing
     else
@@ -110,7 +113,7 @@ function love.update(dt)
         --CheckForEnemyWordBool = false
         -- MoveTowards(enemy, player.x, player.y, dt)
         
-    CheckForCollision()
+        CheckForCollision()
         
         MoveBullets()
         -- Reset the bulletAdded flag at the beginning of each frame
@@ -124,7 +127,7 @@ function love.draw()
     
     --draw images here
     love.graphics.setColor(255/255, 163/255, 0/255)
-    love.graphics.rectangle('fill', player.x, player.y, 4,4)
+    love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     -- love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
@@ -559,20 +562,22 @@ function CheckForCollision()
         local playerTolerance = 4
         if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
             print("player collision lose health")
-            player.health = player.health - 1
-            enemy.x = enemy.x - 5
-            enemy.y = enemy.y - 5
-            enemy.knockback = true
-            local randomX = randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25)
-            local randomY = randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25)
-            enemy.knockBackTarget.x = enemy.knockBackTarget.x + randomX
-            enemy.knockBackTarget.y = enemy.knockBackTarget.y + randomY
-            if player.female then
-                play_female_hurt_sound()
-            else
-                play_male_hurt_sound()
+            if enemy.canHurt then
+                enemy.canHurt = false
+                player.health = player.health - 1
+                enemy.knockback = true
+                local randomX = randomInt(1, 320)
+                local randomY = randomInt(1, 240)
+                enemy.knockBackTarget.x = enemy.knockBackTarget.x + randomX
+                enemy.knockBackTarget.y = enemy.knockBackTarget.y + randomY
+                if player.female then
+                    play_female_hurt_sound()
+                else
+                    play_male_hurt_sound()
+                end
+                break;
             end
-            break;
+            
         end
         for bulletIndex, bullet in ipairs(bulletList) do
             -- Calculate the tolerance for collision
