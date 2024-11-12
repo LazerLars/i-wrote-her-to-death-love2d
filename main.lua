@@ -28,12 +28,13 @@ local player = {
     moveToX = screenWidth /2,
     moveToY = screenHight/2,
     move = false,
-    female = true
+    female = true,
+    originalPosition = {x = screenWidth /2, y = screenHight/2}
 }
-
-local originalPosition = { x = player.x, y = player.y }
+-- TWEEN STUFF FOR PLAYER KNOCKBACK
+-- local originalPosition = { x = player.x, y = player.y }
 local playerTween = nil
-local returningTween = false
+local returningTween_player = false
 
 
 local game = {
@@ -140,6 +141,8 @@ function love.update(dt)
         playerFunctions.PlayerDontExitScreen(player)
         --check if we should move the player
         playerFunctions.MovePlayer(player,dt)
+        player.originalPosition.x = player.x
+        player.originalPosition.y = player.y
         player_update(dt)
         
         enemyFunctions.ManageEnemies(player,dt)
@@ -914,21 +917,21 @@ function pushPlayerBack(bullet)
 
     -- Define the tween to push the player to the target position
     playerTween = tween.new(0.2, player, targetPosition, "outQuad")  -- Push with easing
-    returningTween = false  -- Ensure returning flag is reset
+    returningTween_player = false  -- Ensure returning flag is reset
 end
 
 function player_update(dt)
     if playerTween then
         local complete = playerTween:update(dt)
         if complete then
-            if not returningTween then
+            if not returningTween_player then
                 -- Start the return tween if the first tween is complete
-                playerTween = tween.new(0.1, player, originalPosition, "inQuad")  -- Return with easing
-                returningTween = true  -- Mark as in the returning phase
+                playerTween = tween.new(0.1, player, player.originalPosition, "inQuad")  -- Return with easing
+                returningTween_player = true  -- Mark as in the returning phase
             else
                 -- Tween fully complete; reset tween and flag
                 playerTween = nil
-                returningTween = false
+                returningTween_player = false
             end
         end
     end
