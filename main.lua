@@ -533,6 +533,8 @@ end
 
 function AddBullet(enemy, textInput)
     local bullet = {
+        width = 4,
+        height = 4,
         x = player.x,
         y = player.y,
         speed = 350,
@@ -546,7 +548,7 @@ end
 function DrawBullets()
     for index, bullet in ipairs(bulletList) do
         SetPico8ColorNumb(4)
-        love.graphics.rectangle('fill', bullet.x, bullet.y, 4,4)
+        love.graphics.rectangle('fill', bullet.x, bullet.y, bullet.width, bullet.height)
         love.graphics.setColor(241/255, 173/255, 255/255)
     end
 end
@@ -585,7 +587,8 @@ function CheckForCollision()
             -- Calculate the tolerance for collision
             local tolerance = 4 -- Half the width of the bullet
             -- Check if enemy and bullet positions are colliding with tolerance
-            if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
+            -- if math.abs(enemy.x - bullet.x) < tolerance and math.abs(enemy.y - bullet.y) < tolerance then
+            if isColliding(enemy, bullet) then
                 -- print(enemy.word)
                 -- print(bullet.word)
                 -- we need to check if the bullet word and the enemy word is the same before removing it. else we risk a bullet kills a wrong enemy
