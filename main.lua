@@ -51,6 +51,19 @@ local explosionSettings = {
     speed = 50,                 -- Initial speed of particles
 }
 
+-- Table to hold ejected shells
+local shells = {}
+
+-- Settings for shells
+local shellSettings = {
+    width = 2,                      -- Width of the shell
+    height = 4,                     -- Height of the shell
+    lifetime = 1,                   -- Shell fade-out time in seconds
+    speed = 30,                     -- Initial speed of shell
+    gravity = 50,                   -- Gravity to pull shell downwards
+    rotationSpeed = math.pi / 4     -- Rotation speed of the shell
+}
+
 function love.load()
     print("lets go")
     ReadTxtFileToATable(filename)
@@ -109,6 +122,8 @@ function love.update(dt)
         
         MoveBullets()
 
+        shells_update(dt)
+
         explosion_update(dt)
         -- Reset the bulletAdded flag at the beginning of each frame
         bulletAdded = false
@@ -153,6 +168,7 @@ function love.draw()
     enemyFunctions.DrawEnemies()
     explosion_draw()
     DrawBullets()
+    shells_draw()
     maid64.finish()--finishes the maid64 process
 end
 
@@ -198,6 +214,7 @@ function CheckInputForEnemyWord(enemyList, textInput)
             print(textInput .. " located on enemey")
             print(enemy.x .. "," .. enemy.y)
             AddBullet(enemy, textInput)
+            ejectShell(player.x, player.y)
             bulletAdded = true
             text = ""
         end
@@ -703,4 +720,55 @@ function explosion_draw()
         love.graphics.setColor(241/255, 173/255, 255/255)
     end
     -- love.graphics.setColor(1, 1, 1, 1) -- Reset color to default
+end
+
+-- Function to create a shell at the player's position
+function ejectShell(x, y)
+    local angle = -math.pi / 4 -- Slight upward and to the right angle
+    local speed = shellSettings.speed
+    table.insert(shells, {
+        x = x,                                -- Starting position of shell
+        y = y,
+        vx = math.cos(angle) * speed,         -- X velocity
+        vy = math.sin(angle) * speed,         -- Y velocity
+        rotation = 0,                         -- Initial rotation
+        lifetime = shellSettings.lifetime,    -- Shell lifetime
+    })
+end
+
+function shells_update(dt)
+     -- Update each shell's position, rotation, and lifetime
+     for i = #shells, 1, -1 do
+        local shell = shells[i]
+        shell.lifetime = shell.lifetime - dt
+        if shell.lifetime <= 0 then
+            table.remove(shells, i) -- Remove expired shells
+        else
+            -- Update position with gravity and velocity
+            shell.vy = shell.vy + shellSettings.gravity * dt -- Apply gravity to Y velocity
+            shell.x = shell.x + shell.vx * dt
+            shell.y = shell.y + shell.vy * dt
+            -- Rotate the shell
+            shell.rotation = shell.rotation + shellSettings.rotationSpeed * dt
+        end
+    end
+end
+
+function shells_draw()
+     -- Draw each shell as a rectangle, rotated for a spinning effect
+     for _, shell in ipairs(shells) do
+        local alpha = shell.lifetime / shellSettings.lifetime -- Fade out based on lifetime
+        love.graphics.setColor(1, 1, 0.8, alpha) -- Yellowish shell color with fading
+
+        love.graphics.push()
+        love.graphics.translate(shell.x, shell.y)                      -- Move to shell position
+        love.graphics.rotate(shell.rotation)                           -- Apply rotation
+        love.graphics.rectangle("fill", -shellSettings.width / 2,      -- Centered rectangle
+                                -shellSettings.height / 2, 
+                                shellSettings.width, shellSettings.height)
+        love.graphics.pop()
+    end
+    -- love.graphics.setColor(255/255, 119/255, 168/255)
+    love.graphics.setColor(241/255, 173/255, 255/255)
+
 end
