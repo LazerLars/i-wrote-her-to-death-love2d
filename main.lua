@@ -33,6 +33,8 @@ local game = {
     pause = false
 }
 
+local score = 0
+
 local tablesByFirstLetter = {}
 local wordsTable = {}
 local filename = "texts/10kMostCommonEngWords.txt"
@@ -139,7 +141,7 @@ function love.draw()
     love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
-    -- love.graphics.print(maid64.mouse.getX() .. ',' .. maid64.mouse.getY(), 260,8)
+    love.graphics.print(score, 260,8)
     -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
     love.graphics.setColor(255/255, 0/255, 77/255)
     -- Define the heart size (width and height)
@@ -268,12 +270,12 @@ function CheckPlayerCommands()
         enemyFunctions.ResetEnemyList()
     end
 
-    if string.find(textInput, "settings:male") then
+    if string.find(textInput, ":male") then
         print("changing to male....")
         player.female = false
     end
 
-    if string.find(textInput, "settings:female") then
+    if string.find(textInput, ":female") then
         print("changing to female....")
         player.female = true
     end
@@ -285,7 +287,7 @@ function CheckPlayerCommands()
     end
 
     
-    if string.find(textInput, "settings:pause") then
+    if string.find(textInput, ":pause") then
         print("pause game....")
         if game.pause == true then
             game.pause = false
@@ -614,6 +616,7 @@ function CheckForCollision()
                     table.remove(enemyList, enemyIndex)
                     table.remove(bulletList, bulletIndex)
                     createExplosion(enemy.x, enemy.y)
+                    score = score + 1
                     -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
                     break
                 end
