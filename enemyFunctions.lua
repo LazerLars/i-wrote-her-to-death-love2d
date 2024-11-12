@@ -83,7 +83,7 @@ function DrawEnemies()
 
         -- love.graphics.rectangle('fill', enemyObj.x - enemySize / 2, enemyObj.y + 4, enemySize, enemySize)
         love.graphics.rectangle('fill', enemyObj.x, enemyObj.y, enemyObj.width, enemyObj.height)
-
+        
         love.graphics.setColor(241/255, 173/255, 255/255)
 
         -- Center the word horizontally above the square

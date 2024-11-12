@@ -41,20 +41,14 @@ local enemyCounter = 0
 local bulletList = {}
 local bulletAdded = false
 
-easingFunctions = {
-    linear = function(t) return t end,
-    quadraticIn = function(t) return t * t end,
-    quadraticOut = function(t) return t * (2 - t) end,
-    quadraticInOut = function(t) return t < 0.5 and 2 * t * t or -1 + (2 - t) * (2 - t) end,
-    cubicIn = function(t) return t * t * t end,
-    cubicOut = function(t) return (t - 1) * (t - 1) * (t - 1) + 1 end,
-    cubicInOut = function(t) return t < 0.5 and 4 * t * t * t or (t - 1) * (2 - t) * (2 - t) + 1 end,
-    quarticIn = function(t) return t * t * t * t end,
-    quarticOut = function(t) return 1 - (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
-    quarticInOut = function(t) return t < 0.5 and 8 * t * t * t * t or 1 - 8 * (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
-    quinticIn = function(t) return t * t * t * t * t end,
-    quinticOut = function(t) return (t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1) + 1 end,
-    quinticInOut = function(t) return t < 0.5 and 16 * t * t * t * t * t or 1 + 16 * (t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1) end,
+-- Table to hold explosion particles
+local particles = {}
+
+-- Settings for explosion particles
+local explosionSettings = {
+    particleSize = 2,           -- Size of each "fragment"
+    particleLifetime = 1,       -- Lifetime of each particle (in seconds)
+    speed = 50,                 -- Initial speed of particles
 }
 
 function love.load()
@@ -110,12 +104,12 @@ function love.update(dt)
         enemyFunctions.ManageEnemies(player,dt)
 
         CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
-        --CheckForEnemyWordBool = false
-        -- MoveTowards(enemy, player.x, player.y, dt)
-        
+    
         CheckForCollision()
         
         MoveBullets()
+
+        explosion_update(dt)
         -- Reset the bulletAdded flag at the beginning of each frame
         bulletAdded = false
 end
@@ -157,6 +151,7 @@ function love.draw()
 
     --draw enemies
     enemyFunctions.DrawEnemies()
+    explosion_draw()
     DrawBullets()
     maid64.finish()--finishes the maid64 process
 end
@@ -592,6 +587,7 @@ function CheckForCollision()
                     -- Collision detected, remove enemy and bullet
                     table.remove(enemyList, enemyIndex)
                     table.remove(bulletList, bulletIndex)
+                    createExplosion(enemy.x, enemy.y)
                     -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
                     break
                 end
@@ -641,7 +637,7 @@ function randomInt(num1, num2)
         seed = seed * 256 + love.timer.getTime() * 1000 % 256
     end
     math.randomseed(seed)
-
+    
     local numb = math.random(num1,num2)
 
     numb = math.random(num1,num2)
@@ -662,4 +658,49 @@ function isColliding(a, b)
            a.x + a.width > b.x and     -- Player's right side is right of the enemy's left side
            a.y < b.y + b.height and    -- Player's top side is above the enemy's bottom side
            a.y + a.height > b.y        -- Player's bottom side is below the enemy's top side
+end
+
+-- Function to create explosion particles at enemy's position
+function createExplosion(x, y)
+    for i = 1, 4 do                -- Loop to create a 4x4 grid of particles for an 8x8 square
+        for j = 1, 4 do
+            local angle = math.random() * 2 * math.pi -- Random direction
+            local speed = explosionSettings.speed * (0.5 + math.random()) -- Vary speed slightly
+            table.insert(particles, {
+                x = x + (i - 2) * explosionSettings.particleSize, -- Offset to start in 4x4 grid
+                y = y + (j - 2) * explosionSettings.particleSize,
+                vx = math.cos(angle) * speed,
+                vy = math.sin(angle) * speed,
+                lifetime = explosionSettings.particleLifetime,
+            })
+        end
+    end
+end
+
+function explosion_update(dt)
+     -- Update each particle's position and lifetime
+     for i = #particles, 1, -1 do
+        local particle = particles[i]
+        particle.lifetime = particle.lifetime - dt
+        if particle.lifetime <= 0 then
+            table.remove(particles, i) -- Remove expired particles
+        else
+            -- Update particle position with velocity
+            particle.x = particle.x + particle.vx * dt
+            particle.y = particle.y + particle.vy * dt
+        end
+    end
+end
+
+function explosion_draw()
+    -- Draw each particle as a small rectangle
+    for _, particle in ipairs(particles) do
+        love.graphics.setColor(255/255, 119/255, 168/255)
+        
+        local alpha = particle.lifetime / explosionSettings.particleLifetime -- Fade out based on lifetime
+        -- love.graphics.setColor(1, 1, 1, alpha)
+        love.graphics.rectangle("fill", particle.x, particle.y, explosionSettings.particleSize, explosionSettings.particleSize)
+        love.graphics.setColor(241/255, 173/255, 255/255)
+    end
+    -- love.graphics.setColor(1, 1, 1, 1) -- Reset color to default
 end
