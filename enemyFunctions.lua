@@ -17,7 +17,7 @@ function ManageEnemies(player,dt)
         if currentTime - prevSpawnTime >= enemySpawnTimer then
             print(enemySpawnTimer .. " has passed. Spawn enemy")
             prevSpawnTime = currentTime
-            SpawnEnemy(GetWordFromTable(GetEnemyCounter()))
+            addEnemy(GetWordFromTable(GetEnemyCounter()), player)
             IncrementEnemyCounter()
             updatedSpawnTime = true
         end
@@ -51,7 +51,8 @@ function ManageEnemies(player,dt)
         end
     end
 
-function SpawnEnemy(word)
+function addEnemy(word, player)
+    local minDistanceToPlayer = 25
     local enemy = {
         width = 8,
         height = 8,
@@ -68,6 +69,10 @@ function SpawnEnemy(word)
         canHurt = true -- used so the player only take damage from a enemy once
     }
     enemy.orignalSpeed = enemy.speed -- used to reset speed after a knockback to orignal
+    if minDistanceToPlayer < player.x and minDistanceToPlayer < player.y then
+        enemy.x = enemy.x + randomInt(25,50)
+        enemy.y = enemy.y + randomInt(25,50)
+    end
     table.insert(enemyList, enemy)
     --return enemy
 end
@@ -105,7 +110,7 @@ end
 
     return {
         ManageEnemies = ManageEnemies,
-        SpawnEnemy = SpawnEnemy,
+        addEnemy = addEnemy,
         DrawEnemies = DrawEnemies,
         ResetEnemyList = ResetEnemyList,
         GetEnemyList = GetEnemyList

@@ -126,7 +126,7 @@ function love.load()
 
     --spawn first enemy
     IncrementEnemyCounter()
-    enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
+    enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
     IncrementEnemyCounter()
    
 end
@@ -241,7 +241,7 @@ function love.keypressed(key)
         --CheckForEnemyWordBool = true
     end
     if key == "." then
-        enemyFunctions.SpawnEnemy(wordsTable[enemyCounter])
+        enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
         IncrementEnemyCounter()
     end
 end
