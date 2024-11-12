@@ -69,9 +69,20 @@ function addEnemy(word, player)
         canHurt = true -- used so the player only take damage from a enemy once
     }
     enemy.orignalSpeed = enemy.speed -- used to reset speed after a knockback to orignal
-    if minDistanceToPlayer < player.x and minDistanceToPlayer < player.y then
-        enemy.x = enemy.x + randomInt(25,50)
-        enemy.y = enemy.y + randomInt(25,50)
+    -- Calculate distance between player and enemy
+    local dx = enemy.x - player.x
+    local dy = enemy.y - player.y
+    local distance = math.sqrt(dx * dx + dy * dy)
+
+    -- If the enemy is too close, move it further away
+    while distance < minDistanceToPlayer do
+        enemy.x = randomInt(1, 320)
+        enemy.y = randomInt(1, 240)
+        
+        -- Recalculate distance after repositioning
+        dx = enemy.x - player.x
+        dy = enemy.y - player.y
+        distance = math.sqrt(dx * dx + dy * dy)
     end
     table.insert(enemyList, enemy)
     --return enemy
