@@ -59,7 +59,7 @@ local shellSettings = {
     width = 2,                      -- Width of the shell
     height = 4,                     -- Height of the shell
     lifetime = 1,                   -- Shell fade-out time in seconds
-    speed = 30,                     -- Initial speed of shell
+    speed = 100,                    -- Initial speed of shell
     gravity = 50,                   -- Gravity to pull shell downwards
     rotationSpeed = math.pi / 4     -- Rotation speed of the shell
 }
@@ -214,7 +214,8 @@ function CheckInputForEnemyWord(enemyList, textInput)
             print(textInput .. " located on enemey")
             print(enemy.x .. "," .. enemy.y)
             AddBullet(enemy, textInput)
-            ejectShell(player.x, player.y)
+            local bullet  = {target = enemy}
+            ejectShell(player, bullet)
             bulletAdded = true
             text = ""
         end
@@ -722,23 +723,31 @@ function explosion_draw()
     -- love.graphics.setColor(1, 1, 1, 1) -- Reset color to default
 end
 
--- Function to create a shell at the player's position
-function ejectShell(x, y)
-    local angle = -math.pi / 4 -- Slight upward and to the right angle
+-- Function to create a shell at the player's position with opposite bullet direction
+function ejectShell(player, bullet)
+    local angle = calculateAngle(player, bullet.target) + math.pi -- Opposite direction of bullet
     local speed = shellSettings.speed
+
     table.insert(shells, {
-        x = x,                                -- Starting position of shell
-        y = y,
-        vx = math.cos(angle) * speed,         -- X velocity
-        vy = math.sin(angle) * speed,         -- Y velocity
-        rotation = 0,                         -- Initial rotation
-        lifetime = shellSettings.lifetime,    -- Shell lifetime
+        x = player.x,                          -- Starting position of shell
+        y = player.y,
+        vx = math.cos(angle) * speed,          -- X velocity in opposite direction
+        vy = math.sin(angle) * speed,          -- Y velocity in opposite direction
+        rotation = 0,                          -- Initial rotation
+        lifetime = shellSettings.lifetime,     -- Shell lifetime
     })
+end
+
+-- Function to calculate angle from player to enemy
+ function calculateAngle(player, target)
+    local dx = target.x - player.x
+    local dy = target.y - player.y
+    return math.atan2(dy, dx) -- Angle in radians
 end
 
 function shells_update(dt)
      -- Update each shell's position, rotation, and lifetime
-     for i = #shells, 1, -1 do
+    for i = #shells, 1, -1 do
         local shell = shells[i]
         shell.lifetime = shell.lifetime - dt
         if shell.lifetime <= 0 then
@@ -755,8 +764,9 @@ function shells_update(dt)
 end
 
 function shells_draw()
-     -- Draw each shell as a rectangle, rotated for a spinning effect
-     for _, shell in ipairs(shells) do
+
+    -- Draw each shell as a rectangle, rotated for a spinning effect
+    for _, shell in ipairs(shells) do
         local alpha = shell.lifetime / shellSettings.lifetime -- Fade out based on lifetime
         love.graphics.setColor(1, 1, 0.8, alpha) -- Yellowish shell color with fading
 
@@ -768,7 +778,6 @@ function shells_draw()
                                 shellSettings.width, shellSettings.height)
         love.graphics.pop()
     end
-    -- love.graphics.setColor(255/255, 119/255, 168/255)
     love.graphics.setColor(241/255, 173/255, 255/255)
 
 end
