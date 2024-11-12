@@ -81,8 +81,8 @@ function DrawEnemies()
         local enemySize = 8
         local wordWidth = font:getWidth(enemyObj.word)  -- Assuming you have a 'font' variable set to your desired font
 
-        -- Center the square horizontally and draw it
-        love.graphics.rectangle('fill', enemyObj.x - enemySize / 2, enemyObj.y + 4, enemySize, enemySize)
+        -- love.graphics.rectangle('fill', enemyObj.x - enemySize / 2, enemyObj.y + 4, enemySize, enemySize)
+        love.graphics.rectangle('fill', enemyObj.x, enemyObj.y, enemyObj.width, enemyObj.height)
 
         love.graphics.setColor(241/255, 173/255, 255/255)
 

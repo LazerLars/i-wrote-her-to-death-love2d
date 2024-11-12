@@ -559,8 +559,9 @@ end
 
 function CheckForCollision()
     for enemyIndex, enemy in ipairs(enemyList) do
-        local playerTolerance = 4
-        if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
+        -- local playerTolerance = 4
+        -- if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
+        if isColliding(player, enemy) then
             print("player collision lose health")
             if enemy.canHurt then
                 enemy.canHurt = false
@@ -647,4 +648,12 @@ function randomInt(num1, num2)
     numb = math.ceil(numb)
 
     return numb
+end
+
+-- Function to check if two rectangles are colliding
+function isColliding(a, b)
+    return a.x < b.x + b.width and     -- Player's left side is left of the enemy's right side
+           a.x + a.width > b.x and     -- Player's right side is right of the enemy's left side
+           a.y < b.y + b.height and    -- Player's top side is above the enemy's bottom side
+           a.y + a.height > b.y        -- Player's bottom side is below the enemy's top side
 end
