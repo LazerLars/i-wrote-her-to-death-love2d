@@ -556,13 +556,15 @@ end
 
 function CheckForCollision()
     for enemyIndex, enemy in ipairs(enemyList) do
-        playerTolerance = 4
+        local playerTolerance = 4
         if math.abs(player.x  - enemy.x) < playerTolerance and math.abs(player.y - enemy.y) < playerTolerance then
             print("player collision lose health")
             player.health = player.health - 1
+            enemy.x = enemy.x - 5
+            enemy.y = enemy.y - 5
             enemy.knockback = true
-            local randomX = randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100)
-            local randomY = randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100); randomInt(-100, 100)
+            local randomX = randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25)
+            local randomY = randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25); randomInt(-25, 25)
             enemy.knockBackTarget.x = enemy.knockBackTarget.x + randomX
             enemy.knockBackTarget.y = enemy.knockBackTarget.y + randomY
             if player.female then

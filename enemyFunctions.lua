@@ -36,7 +36,7 @@ function ManageEnemies(player,dt)
           --MoveTowards(enemyObj, player.x, player.y, dt)
             if enemyObj.knockback == false then
                 MoveTowardsObject(enemyObj, player)
-            else
+            else 
                 -- enemyObj.speed = enemyObj.speed + 2
                 
                 MoveTowardsObject(enemyObj, enemyObj.knockBackTarget )
@@ -60,6 +60,7 @@ function SpawnEnemy(word)
             x=1,
             y=1},
         knockback = false,
+        knockbackSpeed = 20,
         orignalSpeed = 1
     }
     enemy.orignalSpeed = enemy.speed
