@@ -33,7 +33,7 @@ local game = {
     pause = false
 }
 
-local score = 0
+
 
 local tablesByFirstLetter = {}
 local wordsTable = {}
@@ -67,12 +67,18 @@ local shellSettings = {
 }
 
 -- Variables for score and effects
-local score = 0
+local stats = {
+    score = 0,
+    correctWords = 0,
+    rightWords = 0,
+    playTime = 0,
+    reloadCount = 0
+}
 local scoreEffect = {
     scale = 1,              -- Current scale of the score text (for scaling effect)
     scaleSpeed = 1.5,       -- Speed at which it grows/shrinks
-    shakeIntensity = 5,     -- Intensity of shake in pixels
-    duration = 0.3,         -- Duration of the effect
+    shakeIntensity = 2,     -- Intensity of shake in pixels
+    duration = 0.2,         -- Duration of the effect
     timer = 0,              -- Timer for controlling effect duration
     type = nil              -- Current effect type: "scale" or "shake"
 }
@@ -215,6 +221,7 @@ function love.keypressed(key)
     if key == "return" then
         if textInput ~= ":reload" then
             play_shotgun_sound()
+            stats.reloadCount = stats.reloadCount + 1
         end
         oldText = text
         CheckPlayerCommands()
@@ -832,7 +839,7 @@ end
 
 -- Function to increase the score with a specified effect type
 function addScore(amount, effectType)
-    score = score + amount
+    stats.score = stats.score + amount
     scoreEffect.type = effectType  -- Set the current effect type
     scoreEffect.timer = scoreEffect.duration  -- Reset the timer
 
@@ -880,5 +887,5 @@ function score_draw()
     local offsetX = (1 - scaleX) * 20
     local offsetY = (1 - scaleY) * 10
 
-    love.graphics.print(score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
+    love.graphics.print(stats.score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
 end
