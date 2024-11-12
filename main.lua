@@ -6,6 +6,8 @@ local maid64 = require "maid64"
 local utf8 = require("utf8")
 local playerFunctions = require("playerFunctions")
 local enemyFunctions = require("enemyFunctions")
+local tween = require("tween") 
+
 
 --settings
 local screenWidth = 320
@@ -28,6 +30,11 @@ local player = {
     move = false,
     female = true
 }
+
+local originalPosition = { x = player.x, y = player.y }
+local playerTween = nil
+local returningTween = false
+
 
 local game = {
     pause = false
@@ -133,6 +140,7 @@ function love.update(dt)
         playerFunctions.PlayerDontExitScreen(player)
         --check if we should move the player
         playerFunctions.MovePlayer(player,dt)
+        player_update(dt)
         
         enemyFunctions.ManageEnemies(player,dt)
 
@@ -242,6 +250,7 @@ function CheckInputForEnemyWord(enemyList, textInput)
             print(enemy.x .. "," .. enemy.y)
             AddBullet(enemy, textInput)
             local bullet  = {target = enemy}
+            pushPlayerBack(bullet)
             ejectShell(player, bullet)
             bulletAdded = true
             text = ""
@@ -589,6 +598,7 @@ function AddBullet(enemy, textInput)
     }
     table.insert(bulletList, bullet)
     print('adding bullet for enemy word: ' .. enemy.word)
+    return bullet
 end
 
 function DrawBullets()
@@ -888,4 +898,38 @@ function score_draw()
     local offsetY = (1 - scaleY) * 10
 
     love.graphics.print(stats.score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
+end
+
+-- Function to push the player back with an easing effect
+function pushPlayerBack(bullet)
+    -- Calculate the angle from the player to the bullet's target
+    local angle = calculateAngle(player, bullet.target) + math.pi  -- Opposite direction
+
+    -- Random distance between 5 and 20 pixels
+    local distance = math.random(5, 20)
+    local targetPosition = {
+        x = player.x + math.cos(angle) * distance,
+        y = player.y + math.sin(angle) * distance
+    }
+
+    -- Define the tween to push the player to the target position
+    playerTween = tween.new(0.2, player, targetPosition, "outQuad")  -- Push with easing
+    returningTween = false  -- Ensure returning flag is reset
+end
+
+function player_update(dt)
+    if playerTween then
+        local complete = playerTween:update(dt)
+        if complete then
+            if not returningTween then
+                -- Start the return tween if the first tween is complete
+                playerTween = tween.new(0.1, player, originalPosition, "inQuad")  -- Return with easing
+                returningTween = true  -- Mark as in the returning phase
+            else
+                -- Tween fully complete; reset tween and flag
+                playerTween = nil
+                returningTween = false
+            end
+        end
+    end
 end
