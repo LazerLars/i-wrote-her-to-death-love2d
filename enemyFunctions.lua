@@ -43,6 +43,7 @@ function ManageEnemies(player,dt)
                 if math.abs(enemyObj.x - enemyObj.knockBackTarget.x) < 4 and math.abs(enemyObj.y - enemyObj.knockBackTarget.y) then
                     enemyObj.knockback = false
                     enemyObj.canHurt = true
+                    enemyObj.speed = enemyObj.orignalSpeed
                     -- enemyObj.speed = enemyObj.orignalSpeed
                 end
             end
@@ -52,40 +53,41 @@ function ManageEnemies(player,dt)
 
 function SpawnEnemy(word)
     local enemy = {
-        x = math.random(1,320),
-        y = math.random(1,240),
+        width = 8,
+        height = 8,
+        x = randomInt(1,320),
+        y = randomInt(1,240),
         health = 1,
         word = word,
-        speed = math.random(10,15),
+        speed = randomInt(10,15),
         knockBackTarget = {
-            x=1,
-            y=1},
+            x=1, -- placeholder for knockback target
+            y=1}, -- placeholder for knockback target
         knockback = false,
-        knockbackSpeed = 20,
-        orignalSpeed = 1,
-        canHurt = true
+        orignalSpeed = 1, -- used to reset speed after a knockback to orignal
+        canHurt = true -- used so the player only take damage from a enemy once
     }
-    enemy.orignalSpeed = enemy.speed
+    enemy.orignalSpeed = enemy.speed -- used to reset speed after a knockback to orignal
     table.insert(enemyList, enemy)
     --return enemy
 end
 
 
 function DrawEnemies()
-    for index, value in ipairs(enemyList) do
+    for index, enemyObj in ipairs(enemyList) do
         love.graphics.setColor(255/255, 119/255, 168/255)
 
         --get width of word to center it later above the player
         local enemySize = 8
-        local wordWidth = font:getWidth(value.word)  -- Assuming you have a 'font' variable set to your desired font
+        local wordWidth = font:getWidth(enemyObj.word)  -- Assuming you have a 'font' variable set to your desired font
 
         -- Center the square horizontally and draw it
-        love.graphics.rectangle('fill', value.x - enemySize / 2, value.y + 4, enemySize, enemySize)
+        love.graphics.rectangle('fill', enemyObj.x - enemySize / 2, enemyObj.y + 4, enemySize, enemySize)
 
         love.graphics.setColor(241/255, 173/255, 255/255)
 
         -- Center the word horizontally above the square
-        love.graphics.print(value.word, value.x - wordWidth / 2, value.y - enemySize - 2)  -- Adjust the vertical offset as needed
+        love.graphics.print(enemyObj.word, enemyObj.x - wordWidth / 2, enemyObj.y - enemySize - 2)  -- Adjust the vertical offset as needed
     end
 end
 

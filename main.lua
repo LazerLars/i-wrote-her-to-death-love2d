@@ -570,6 +570,7 @@ function CheckForCollision()
                 local randomY = randomInt(1, 240)
                 enemy.knockBackTarget.x = enemy.knockBackTarget.x + randomX
                 enemy.knockBackTarget.y = enemy.knockBackTarget.y + randomY
+                enemy.speed = 50
                 if player.female then
                     play_female_hurt_sound()
                 else
