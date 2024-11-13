@@ -135,7 +135,7 @@ function love.load()
     IncrementEnemyCounter()
     enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
     IncrementEnemyCounter()
-    startHeartbeatEffect()
+    playerHeartbeatEffect_start()
 end
 
 function love.update(dt)
@@ -151,7 +151,7 @@ function love.update(dt)
         player.originalPosition.x = player.x
         player.originalPosition.y = player.y
         player_update(dt)
-        updateHeartbeatEffect(dt)
+        playerHeartbeatEffect_update(dt)
         enemyFunctions.ManageEnemies(player,dt)
 
         CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
@@ -640,6 +640,7 @@ function CheckForCollision()
             if enemy.canHurt then
                 enemy.canHurt = false
                 player.health = player.health - 1
+                heartbeatBPM = heartbeatBPM + 30
                 enemy.knockback = true
                 local randomX = randomInt(1, 320)
                 local randomY = randomInt(1, 240)
@@ -950,17 +951,16 @@ function player_update(dt)
     end
 end
 
-
-
 -- Function to start or restart the heartbeat effect
-function startHeartbeatEffect()
+function playerHeartbeatEffect_start()
     local beatTime = 60 / heartbeatBPM  -- Duration for each beat cycle in seconds
     -- Tween to increase scale, then decrease back to 1 in half the beat time
     heartbeatTween = tween.new(beatTime / 2, {scale = 1}, {scale = 1.2}, "inOutQuad")
 end
 
 -- Update function for the heartbeat effect
-function updateHeartbeatEffect(dt)
+function playerHeartbeatEffect_update(dt)
+
     if heartbeatTween then
         local complete = heartbeatTween:update(dt)
         heartbeatScale = heartbeatTween.subject.scale  -- Apply the current scale from the tween
