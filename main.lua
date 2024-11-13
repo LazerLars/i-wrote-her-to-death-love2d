@@ -343,6 +343,22 @@ function CheckPlayerCommands()
             game.pause = true
         end
     end
+
+
+    -- NOT IMPLEMENTED YET
+    if string.find(textInput, ":the rug really tied the room together") or string.find(textInput, ":easy") then
+        print("changing to easy mode....")
+    end
+
+    -- NOT IMPLEMENTED YET
+    if string.find(textInput, ":just smile and wave boys, just smile an wave") or string.find(textInput, ":medium") then
+        print("changing to medium mode....")
+    end
+
+    -- NOT IMPLEMENTED YET
+    if string.find(textInput, ":english mother fucker do you speak it") or string.find(textInput, ":hell")  then
+        print("changing to hard mode....")
+    end
 end
 
 --simple movetowards function
