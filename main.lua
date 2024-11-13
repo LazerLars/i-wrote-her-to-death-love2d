@@ -36,6 +36,11 @@ local player = {
 local playerTween = nil
 local returningTween_player = false
 
+-- Heartbeat effect settings
+local heartbeatBPM = 60            -- Beats per minute for the heartbeat
+local heartbeatScale = 1           -- Current scale of player
+local heartbeatTween               -- Tween for the heartbeat effect
+
 
 local game = {
     pause = false
@@ -92,6 +97,8 @@ local scoreEffect = {
 }
 
 
+
+
 function love.load()
     print("lets go")
     ReadTxtFileToATable(filename)
@@ -128,7 +135,7 @@ function love.load()
     IncrementEnemyCounter()
     enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
     IncrementEnemyCounter()
-   
+    startHeartbeatEffect()
 end
 
 function love.update(dt)
@@ -144,7 +151,7 @@ function love.update(dt)
         player.originalPosition.x = player.x
         player.originalPosition.y = player.y
         player_update(dt)
-        
+        updateHeartbeatEffect(dt)
         enemyFunctions.ManageEnemies(player,dt)
 
         CheckInputForEnemyWord(enemyFunctions.GetEnemyList(), text)
@@ -169,7 +176,13 @@ function love.draw()
     
     --draw images here
     love.graphics.setColor(255/255, 163/255, 0/255)
-    love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
+    -- love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
+    -- Draw the player with scaling applied for heartbeat effect
+    love.graphics.push()
+    love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
+    love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
+    love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
+    love.graphics.pop()
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     
@@ -933,6 +946,27 @@ function player_update(dt)
                 playerTween = nil
                 returningTween_player = false
             end
+        end
+    end
+end
+
+
+
+-- Function to start or restart the heartbeat effect
+function startHeartbeatEffect()
+    local beatTime = 60 / heartbeatBPM  -- Duration for each beat cycle in seconds
+    -- Tween to increase scale, then decrease back to 1 in half the beat time
+    heartbeatTween = tween.new(beatTime / 2, {scale = 1}, {scale = 1.2}, "inOutQuad")
+end
+
+-- Update function for the heartbeat effect
+function updateHeartbeatEffect(dt)
+    if heartbeatTween then
+        local complete = heartbeatTween:update(dt)
+        heartbeatScale = heartbeatTween.subject.scale  -- Apply the current scale from the tween
+        if complete then
+            -- Restart the heartbeat cycle by toggling the scale tween
+            heartbeatTween = tween.new(60 / heartbeatBPM / 2, {scale = heartbeatScale}, {scale = heartbeatScale == 1 and 1.2 or 1}, "inOutQuad")
         end
     end
 end
