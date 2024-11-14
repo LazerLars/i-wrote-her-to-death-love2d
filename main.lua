@@ -282,39 +282,39 @@ function CheckPlayerCommands()
             player.moveToY = y
         end
     end
-    if string.find(textInput, 'stop') then
+    if string.find(textInput, ':stop') then
         player.moveToX = player.x
         player.moveToY = player.y
     end
-    if string.find(textInput, 'move left') then
+    if string.find(textInput, ':left') then
         player.moveToX = 0
     end
-    if string.find(textInput, 'move right') then
+    if string.find(textInput, ':right') then
         player.moveToX = screenWidth
     end
-    if string.find(textInput, 'move up') then
+    if string.find(textInput, ':up') then
         player.moveToY = 0
     end
-    if string.find(textInput, 'move down') then
+    if string.find(textInput, ':down') then
         player.moveToY = screenHight
     end
-    if string.find(textInput, 'move upleft') then
+    if string.find(textInput, ':upleft') then
         player.moveToY = 0
         player.moveToX = 0
     end
-    if string.find(textInput, 'move downleft') then
+    if string.find(textInput, ':downleft') then
         player.moveToY = screenHight
         player.moveToX = 0
     end
-    if string.find(textInput, 'move upright') then
+    if string.find(textInput, ':upright') then
         player.moveToY = 0
         player.moveToX = screenWidth
     end
-    if string.find(textInput, 'move downright') then
+    if string.find(textInput, ':downright') then
         player.moveToY = screenHight
         player.moveToX = screenWidth
     end
-    if string.find(textInput, "clear all foes") then
+    if string.find(textInput, ":take care now bye bye then") then
         enemyFunctions.ResetEnemyList()
     end
 
