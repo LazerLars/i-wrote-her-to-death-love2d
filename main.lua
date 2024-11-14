@@ -173,9 +173,10 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-    
+    -- love.graphics.setBackgroundColor(0.2, 0.5, 0.8)
     --draw images here
-    love.graphics.setColor(255/255, 163/255, 0/255)
+    -- love.graphics.setColor(255/255, 163/255, 0/255)
+    SetPico8ColorNumb(1) -- 1 = red
     -- love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
     -- Draw the player with scaling applied for heartbeat effect
     love.graphics.push()
@@ -578,6 +579,36 @@ function CheckForEnemyCounterReset()
         
     end
 end
+
+
+function colors_windows_xp_colors(colorNumb)
+    -- Define the Pico-8 color palette, prioritizing iconic colors
+    local win_xp_colors = {
+      {255, 0, 77},  -- Dark Red
+      {29, 43, 83},  -- Dark Green
+      {126, 37, 83},  -- Dark Blue
+      {255, 241, 232},  -- White
+      -- Other colors
+      {171, 82, 54},  -- Brown
+      {95, 87, 79},  -- Gray
+      {194, 195, 199},  -- Light Gray
+      {0, 135, 81},  -- Dark Teal
+      {255, 0, 77},  -- Pink
+      {255, 163, 0},  -- Orange
+      {255, 236, 39},  -- Yellow
+      {0, 228, 54},  -- Light Green
+      {241, 173, 255},  -- Light Blue
+      {131, 118, 156},  -- Violet
+      {255, 119, 168},  -- Magenta
+      {255, 204, 170},  -- Peach
+    }
+  
+    -- Ensure the color number is within the valid range
+    color = math.max(1, math.min(color, #win_xp_colors))
+  
+    -- Return the corresponding color tuple
+    return win_xp_colors[color]
+  end
 
 function SetPico8ColorNumb(color)
 	local myColor = love.graphics.setColor(0/255, 0/255, 0/255)
