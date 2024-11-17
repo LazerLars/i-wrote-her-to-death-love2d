@@ -1,8 +1,8 @@
 -- playerFunctions.lua
 
 local tolerance = 0.01
-local screenWidth = 320
-local screenHeight = 240
+-- local screenWidth = 320
+-- local screenHeight = 240
 
 function PlayerDontExitScreen(player)
     if player.x > screenWidth then

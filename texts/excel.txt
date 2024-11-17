@@ -1,0 +1,223 @@
+data
+formula
+function
+cell
+range
+workbook
+worksheet
+sheet
+row
+column
+pivot table
+chart
+graph
+vlookup
+hlookup
+index
+match
+sum
+average
+min
+max
+if
+count
+counta
+countif
+sumif
+sumproduct
+trim
+concatenate
+left
+right
+mid
+text
+date
+time
+now
+today
+month
+year
+day
+hour
+minute
+second
+round
+roundup
+rounddown
+abs
+sqrt
+rand
+randbetween
+len
+find
+search
+substitute
+replace
+value
+isnumber
+istext
+isblank
+iserror
+iferror
+and
+or
+not
+isna
+match
+offset
+indirect
+formulatext
+cell
+column
+row
+transpose
+union
+intersect
+exact
+pmt
+fv
+nper
+rate
+pv
+sumifs
+averageifs
+countifs
+concat
+textjoin
+flash fill
+conditional formatting
+data validation
+data consolidation
+sorting
+filtering
+freeze panes
+split
+zoom
+hyperlink
+comments
+insert
+delete
+group
+ungroup
+text to columns
+find and replace
+autosum
+formulas tab
+data tab
+home tab
+view tab
+ribbon
+quick access toolbar
+cell styles
+number format
+currency
+percentage
+accounting
+fraction
+scientific
+text format
+custom format
+chart types
+bar chart
+line chart
+pie chart
+area chart
+scatter chart
+combo chart
+data labels
+legend
+axis
+gridlines
+trendline
+sparklines
+format painter
+cell border
+cell fill
+merge and center
+wrap text
+text orientation
+font size
+font style
+font color
+cell protection
+lock cells
+unlock cells
+hide columns
+hide rows
+show all
+print preview
+print area
+page layout
+margins
+orientation
+scaling
+gridlines in print
+headers and footers
+page breaks
+print titles
+autofilter
+subtotal
+flash fill
+power query
+power pivot
+power bi
+solver
+scenario manager
+goal seek
+pivot chart
+dynamic named range
+slicers
+timelines
+add-ins
+macros
+vba
+developer tab
+record macro
+edit macro
+visual basic editor
+form controls
+activex controls
+data model
+excel online
+excel for mac
+excel for windows
+excel for web
+excel mobile
+cell reference
+absolute reference
+relative reference
+mixed reference
+named range
+circular reference
+workbook protection
+worksheet protection
+vba module
+function library
+advanced filter
+group box
+combo box
+check box
+radio button
+spinner
+scrollbar
+list box
+pivottable field list
+activecell
+formula bar
+name box
+status bar
+workbook views
+normal view
+page layout view
+page break preview
+zoom slider
+formula auditing
+trace precedents
+trace dependents
+show formulas
+error checking
+evaluate formula
+watch window
+scenario
+add-ins
+compatibility mode

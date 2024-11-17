@@ -14,15 +14,15 @@ Jiminy Crickets
 Son of a gun
 Egad
 Great Scott
-Caesar’s ghost
-Merlin’s beard
-Merlin’s pants
+Caesar's ghost
+Merlin's beard
+Merlin's pants
 Shucks
 Darn
 Dagnabbit
 Dang rabbit
 Dadgummit
-Jumpin’ Jiminy
+Jumpin' Jiminy
 Phooey Son of a monkey Fudge nuggets
 Phooey Son of a monkey Fudge nuggets
 Gee willickers
@@ -40,7 +40,7 @@ Shut the front door
 Holy cow
 Horse pucky
 Geez
-Sufferin’ succotash
+Sufferin' succotash
 Son of a mother trucker
 Fudge berries
 Geez Terwilligers
@@ -63,7 +63,7 @@ Crikey
 Scuddle butt
 Shuzzbutt
 Son of a biscuit
-Leapin’ lizards
+Leapin' lizards
 Oh my gosh
 Oh my goodness
 Peanut butter and jelly
@@ -85,8 +85,8 @@ Barnacles
 Eat soap
 Eat slugs
 Go lick a duck
-For Pete’s sake
-I don’t give a Donald Duck
+For Pete's sake
+I don't give a Donald Duck
 Cheeses
 Pluck it
 Yuck fou
@@ -95,7 +95,7 @@ Hamburgers
 Geez Louise
 Fishsticks
 Frack
-Jumpin’ Jehoshaphat
+Jumpin' Jehoshaphat
 What the cuss
 Narf
 Marklar

@@ -10,8 +10,11 @@ local tween = require("tween")
 
 
 --settings
-local screenWidth = 320
-local screenHight = 240
+-- local screenWidth = 320
+screenWidth = 480
+-- local screenHight = 240
+screenHeight = 270
+screenScaler = 2
 
 local textInput = ""
 local text = ""
@@ -23,13 +26,13 @@ local player = {
     height = 8,
     health = 5,
     x = screenWidth /2,
-    y = screenHight/2,
+    y = screenHeight/2,
     speed = 50,
     moveToX = screenWidth /2,
-    moveToY = screenHight/2,
+    moveToY = screenHeight/2,
     move = false,
     female = true,
-    originalPosition = {x = screenWidth /2, y = screenHight/2}
+    originalPosition = {x = screenWidth /2, y = screenHeight/2}
 }
 -- TWEEN STUFF FOR PLAYER KNOCKBACK
 -- local originalPosition = { x = player.x, y = player.y }
@@ -50,7 +53,9 @@ local game = {
 
 local tablesByFirstLetter = {}
 local wordsTable = {}
-local filename = "texts/10kMostCommonEngWords.txt"
+-- local filename = "texts/10kMostCommonEngWords.txt"
+local filename = "texts/excel.txt"
+
 local enemyCounter = 0
 
 local bulletList = {}
@@ -109,16 +114,16 @@ function love.load()
     print(wordsTable[9959])
 
     --optional settings for window
-    love.window.setMode(screenWidth * 3, screenHight * 3, {resizable=true, vsync=false, minwidth=200, minheight=200})
+    love.window.setMode(screenWidth * screenScaler, screenHeight * screenScaler, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
     --initilizing maid64 for use and set to 64x64 mode 
     --can take 2 parameters x and y if needed for example maid64.setup(64,32)
-    maid64.setup(screenWidth, screenHight)
+    maid64.setup(screenWidth, screenHeight)
     love.graphics.setDefaultFilter("nearest", "nearest")
     
 
     --font = love.graphics.newFont('fonts/pico-8-mono.otf', 8)
-    --font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
+    -- font = love.graphics.newFont('fonts/pico-8-mono.ttf', 8)
     font = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 8)
     --not needed when appling love.graphics.setDefaultFilter("nearest", "nearest")
     --font:setFilter('nearest', 'nearest')
@@ -175,8 +180,8 @@ function love.draw()
     maid64.start()--starts the maid64 process
     -- love.graphics.setBackgroundColor(0.2, 0.5, 0.8)
     --draw images here
-    -- love.graphics.setColor(255/255, 163/255, 0/255)
-    SetPico8ColorNumb(1) -- 1 = red
+    
+    Colors_pico8(1) -- 1 = red
     -- love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
     -- Draw the player with scaling applied for heartbeat effect
     love.graphics.push()
@@ -203,11 +208,12 @@ function love.draw()
         -- Draw the heart rectangle (adjust for your heart shape)
         love.graphics.rectangle('fill', x, 4, heart_width, heart_height)
     end
-    love.graphics.setColor(255/255, 163/255, 0/255)
+    -- love.graphics.setColor(255/255, 163/255, 0/255)
+    -- Colors_winXP(9)
     
     -- love.graphics.print("Life: " .. player.health, 260,8)
     love.graphics.print('> ' .. textInput, 0, 226)
-    love.graphics.setFont(font, 4)
+    -- love.graphics.setFont(font, 4)
     love.graphics.print('' .. oldText, 0, 226-14-14)
     love.graphics.print('' .. text, 0, 226-14)
 
@@ -297,14 +303,14 @@ function CheckPlayerCommands()
         player.moveToY = 0
     end
     if string.find(textInput, ':down') then
-        player.moveToY = screenHight
+        player.moveToY = screenHeight
     end
     if string.find(textInput, ':upleft') then
         player.moveToY = 0
         player.moveToX = 0
     end
     if string.find(textInput, ':downleft') then
-        player.moveToY = screenHight
+        player.moveToY = screenHeight
         player.moveToX = 0
     end
     if string.find(textInput, ':upright') then
@@ -312,7 +318,7 @@ function CheckPlayerCommands()
         player.moveToX = screenWidth
     end
     if string.find(textInput, ':downright') then
-        player.moveToY = screenHight
+        player.moveToY = screenHeight
         player.moveToX = screenWidth
     end
     if string.find(textInput, ":take care now bye bye then") then
@@ -581,36 +587,48 @@ function CheckForEnemyCounterReset()
 end
 
 
-function colors_windows_xp_colors(colorNumb)
-    -- Define the Pico-8 color palette, prioritizing iconic colors
-    local win_xp_colors = {
-      {255, 0, 77},  -- Dark Red
-      {29, 43, 83},  -- Dark Green
-      {126, 37, 83},  -- Dark Blue
-      {255, 241, 232},  -- White
-      -- Other colors
-      {171, 82, 54},  -- Brown
-      {95, 87, 79},  -- Gray
-      {194, 195, 199},  -- Light Gray
-      {0, 135, 81},  -- Dark Teal
-      {255, 0, 77},  -- Pink
-      {255, 163, 0},  -- Orange
-      {255, 236, 39},  -- Yellow
-      {0, 228, 54},  -- Light Green
-      {241, 173, 255},  -- Light Blue
-      {131, 118, 156},  -- Violet
-      {255, 119, 168},  -- Magenta
-      {255, 204, 170},  -- Peach
-    }
-  
-    -- Ensure the color number is within the valid range
-    color = math.max(1, math.min(color, #win_xp_colors))
-  
-    -- Return the corresponding color tuple
-    return win_xp_colors[color]
-  end
+function Colors_winXP(color)
+    local myColor = love.graphics.setColor(0/255, 0/255, 0/255) -- Default color, can be any base color
+    
+    if color == 1 then
+        myColor = love.graphics.setColor(255/255, 0/255, 77/255) -- Dark Red
+    elseif color == 2 then
+        myColor = love.graphics.setColor(29/255, 43/255, 83/255) -- Dark Green
+    elseif color == 3 then
+        myColor = love.graphics.setColor(126/255, 37/255, 83/255) -- Dark Blue
+    elseif color == 4 then
+        myColor = love.graphics.setColor(255/255, 241/255, 232/255) -- White
+    elseif color == 5 then
+        myColor = love.graphics.setColor(171/255, 82/255, 54/255) -- Brown
+    elseif color == 6 then
+        myColor = love.graphics.setColor(95/255, 87/255, 79/255) -- Gray
+    elseif color == 7 then
+        myColor = love.graphics.setColor(194/255, 195/255, 199/255) -- Light Gray
+    elseif color == 8 then
+        myColor = love.graphics.setColor(0/255, 135/255, 81/255) -- Dark Teal
+    elseif color == 9 then
+        myColor = love.graphics.setColor(255/255, 0/255, 77/255) -- Pink
+    elseif color == 10 then
+        myColor = love.graphics.setColor(255/255, 163/255, 0/255) -- Orange
+    elseif color == 11 then
+        myColor = love.graphics.setColor(255/255, 236/255, 39/255) -- Yellow
+    elseif color == 12 then
+        myColor = love.graphics.setColor(0/255, 228/255, 54/255) -- Light Green
+    elseif color == 13 then
+        myColor = love.graphics.setColor(241/255, 173/255, 255/255) -- Light Blue
+    elseif color == 14 then
+        myColor = love.graphics.setColor(131/255, 118/255, 156/255) -- Violet
+    elseif color == 15 then
+        myColor = love.graphics.setColor(255/255, 119/255, 168/255) -- Magenta
+    elseif color == 16 then
+        myColor = love.graphics.setColor(255/255, 204/255, 170/255) -- Peach
+    end
 
-function SetPico8ColorNumb(color)
+    return myColor
+end
+
+
+function Colors_pico8(color)
 	local myColor = love.graphics.setColor(0/255, 0/255, 0/255)
 	if color == 1 then
 		myColor = love.graphics.setColor(255/255, 0/255, 77/255)
@@ -666,7 +684,7 @@ end
 
 function DrawBullets()
     for index, bullet in ipairs(bulletList) do
-        SetPico8ColorNumb(4)
+        Colors_pico8(4)
         love.graphics.rectangle('fill', bullet.x, bullet.y, bullet.width, bullet.height)
         love.graphics.setColor(241/255, 173/255, 255/255)
     end
