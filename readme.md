@@ -5,6 +5,8 @@ female-hurt-2.wav by birdOfTheNorth -- https://freesound.org/s/577969/ -- Licens
 Hurt  1 - (Male) by Christopherderp -- https://freesound.org/s/342229/ -- License: Creative Commons 0
 shotgun_shell_drop.wav by ThompsonMan -- https://freesound.org/s/107342/ -- License: Attribution 4.0
 shotgun_reload.mp3 by zekybomb -- https://freesound.org/s/677662/ -- License: Creative Commons 0
+Gun Click by knova -- https://freesound.org/s/170272/ -- License: Attribution 4.0
+
 windows:::
 
 REMEMBER TO SET conf.lua: 

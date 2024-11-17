@@ -19,7 +19,7 @@ screenScaler = 2
 local textInput = ""
 local text = ""
 local oldText = ""
-local CheckForEnemyWordBool = false
+
 
 local player = {
     width = 8,
@@ -34,6 +34,7 @@ local player = {
     female = true,
     originalPosition = {x = screenWidth /2, y = screenHeight/2}
 }
+local play_gun_click = false
 -- TWEEN STUFF FOR PLAYER KNOCKBACK
 -- local originalPosition = { x = player.x, y = player.y }
 local playerTween = nil
@@ -255,14 +256,14 @@ function love.keypressed(key)
         end
     end
     if key == "return" then
-        if textInput ~= ":reload" then
-            play_shotgun_sound()
-            stats.reloadCount = stats.reloadCount + 1
-        end
+        -- if textInput ~= ":reload" then
+        --     play_shotgun_sound()
+        -- end
         oldText = text
         CheckPlayerCommands()
         text = textInput
         textInput = ""
+        play_gun_click = true
         --CheckForEnemyWordBool = true
     end
     if key == "." then
@@ -274,6 +275,7 @@ end
 function CheckInputForEnemyWord(enemyList, textInput)
     for index, enemy in ipairs(enemyList) do
         if enemy.word == textInput and not bulletAdded then
+            play_shotgun_sound()
             print(textInput .. " located on enemey")
             print(enemy.x .. "," .. enemy.y)
             AddBullet(enemy, textInput)
@@ -282,6 +284,14 @@ function CheckInputForEnemyWord(enemyList, textInput)
             ejectShell(player, bullet)
             bulletAdded = true
             text = ""
+        else
+            -- the user wrote a wrong word
+            -- only play once per return click
+            if play_gun_click then
+                play_gun_clock_sound()
+                play_gun_click = false
+                
+            end
         end
     end
 end
@@ -342,7 +352,7 @@ function CheckPlayerCommands()
 
     
     if string.find(textInput, ":reload") then
-        print("changing to female....")
+        stats.reloadCount = stats.reloadCount + 1
         play_shotgun_reload_sound()
     end
 
@@ -765,6 +775,13 @@ end
 function play_click_sound()
     -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
     local sfx = love.audio.newSource('sfx/keyboard_click_00.wav', 'static')
+    love.audio.play(sfx)
+    sfx:play()
+end
+
+function play_gun_clock_sound()
+    -- local sfx_click = love.audio.newSource('sfx/razor_black_widdow_green_click.mp3', 'stream')
+    local sfx = love.audio.newSource('sfx/gun_click.wav', 'static')
     love.audio.play(sfx)
     sfx:play()
 end
