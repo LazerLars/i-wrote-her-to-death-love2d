@@ -105,6 +105,8 @@ local scoreEffect = {
 
 
 function love.load()
+    love.window.setTitle("I WROTE HER TO DEATH")
+
     print("lets go")
     ReadTxtFileToATable(filename)
     print(wordsTable[9959])
@@ -178,11 +180,13 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-    -- love.graphics.setBackgroundColor(0.2, 0.5, 0.8)
-    --draw images here
+    
+    -- set background color
+    -- Colors_pico8(16, true) -- 6
+    
     
     Colors_pico8(1) -- 1 = red
-    -- love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
+    
     -- Draw the player with scaling applied for heartbeat effect
     love.graphics.push()
     love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
@@ -193,7 +197,7 @@ function love.draw()
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     
     -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
-    love.graphics.setColor(255/255, 0/255, 77/255)
+    Colors_pico8(9)
     -- Define the heart size (width and height)
     local heart_width = 4
     local heart_height = 4
@@ -212,10 +216,11 @@ function love.draw()
     -- Colors_winXP(9)
     
     -- love.graphics.print("Life: " .. player.health, 260,8)
-    love.graphics.print('> ' .. textInput, 0, 226)
+    local lineSpacing = 14
+    love.graphics.print('> ' .. textInput, 0, screenHeight-(lineSpacing))
     -- love.graphics.setFont(font, 4)
-    love.graphics.print('' .. oldText, 0, 226-14-14)
-    love.graphics.print('' .. text, 0, 226-14)
+    love.graphics.print('' .. oldText, 14, screenHeight-(lineSpacing * 3))
+    love.graphics.print('' .. text, 14, screenHeight-(14*2))
 
     --draw enemies
     enemyFunctions.DrawEnemies()
@@ -628,43 +633,52 @@ function Colors_winXP(color)
 end
 
 
-function Colors_pico8(color)
-	local myColor = love.graphics.setColor(0/255, 0/255, 0/255)
-	if color == 1 then
-		myColor = love.graphics.setColor(255/255, 0/255, 77/255)
-	elseif color == 2 then
-		myColor = love.graphics.setColor(29/255, 43/255, 83/255	)
-	elseif color == 3 then
-		myColor = love.graphics.setColor(126/255, 37/255, 83/255)
-	elseif color == 4 then
-		myColor = love.graphics.setColor(0/255, 135/255, 81/255)
-	elseif color == 5 then
-		myColor = love.graphics.setColor(171/255, 82/255, 54/255)
-	elseif color == 6 then
-		myColor = love.graphics.setColor(95/255, 87/255, 79/255)
-	elseif color == 7 then
-		myColor = love.graphics.setColor(194/255, 195/255, 199/255)
-	elseif color == 8 then
-		myColor = love.graphics.setColor(255/255, 241/255, 232/255)
-	elseif color == 9 then
-		myColor = love.graphics.setColor(255/255, 0/255, 77/255)
-	elseif color == 10 then
-		myColor = love.graphics.setColor(255/255, 163/255, 0/255)
-	elseif color == 11 then
-		myColor = love.graphics.setColor(255/255, 236/255, 39/255)
-	elseif color == 12 then
-		myColor = love.graphics.setColor(0/255, 228/255, 54/255)
-	elseif color == 13 then
-		myColor = love.graphics.setColor(241/255, 173/255, 255/255)
-	elseif color == 14 then
-		myColor = love.graphics.setColor(131/255, 118/255, 156/255)
-	elseif color == 15 then
-		myColor = love.graphics.setColor(255/255, 119/255, 168/255)
-	elseif color == 16 then
-		myColor = love.graphics.setColor(255/255, 204/255, 170/255)
-	end
+function Colors_pico8(color, setBackground)
+    local myColor = {0/255, 0/255, 0/255} -- Default color (black)
 
-	return myColor
+    -- Define the color based on the index
+    if color == 1 then
+        myColor = {255/255, 0/255, 77/255} -- Dark Red
+    elseif color == 2 then
+        myColor = {29/255, 43/255, 83/255} -- Dark Green
+    elseif color == 3 then
+        myColor = {126/255, 37/255, 83/255} -- Dark Blue
+    elseif color == 4 then
+        myColor = {255/255, 241/255, 232/255} -- White
+    elseif color == 5 then
+        myColor = {171/255, 82/255, 54/255} -- Brown
+    elseif color == 6 then
+        myColor = {95/255, 87/255, 79/255} -- Gray
+    elseif color == 7 then
+        myColor = {194/255, 195/255, 199/255} -- Light Gray
+    elseif color == 8 then
+        myColor = {0/255, 135/255, 81/255} -- Dark Teal
+    elseif color == 9 then
+        myColor = {255/255, 0/255, 77/255} -- Pink
+    elseif color == 10 then
+        myColor = {255/255, 163/255, 0/255} -- Orange
+    elseif color == 11 then
+        myColor = {255/255, 236/255, 39/255} -- Yellow
+    elseif color == 12 then
+        myColor = {0/255, 228/255, 54/255} -- Light Green
+    elseif color == 13 then
+        myColor = {241/255, 173/255, 255/255} -- Light Blue
+    elseif color == 14 then
+        myColor = {131/255, 118/255, 156/255} -- Violet
+    elseif color == 15 then
+        myColor = {255/255, 119/255, 168/255} -- Magenta
+    elseif color == 16 then
+        myColor = {255/255, 204/255, 170/255} -- Peach
+    end
+
+    -- Set the color for drawing (if setBackground is false or not passed)
+    if not setBackground then
+        love.graphics.setColor(myColor) -- Set drawing color
+    else
+        love.graphics.setBackgroundColor(myColor) -- Set background color
+    end
+
+    return myColor
 end
 
 function AddBullet(enemy, textInput)
@@ -965,8 +979,10 @@ function score_update(dt)
 end
 
 function score_draw()
-    
-    local x, y = 260, 8             -- Position for the score
+    -- we are drawings x's in front of the score :D then we need to make a off set for hte number of xs
+    local scoreOffSetBase = 8 * 9
+    local maxScoreCharLen = 8
+    local x, y = screenWidth - scoreOffSetBase, 8 -- Position for the score
 
     -- Apply scale and/or shake effect if active
     local scaleX, scaleY = scoreEffect.scale, scoreEffect.scale
@@ -978,9 +994,31 @@ function score_draw()
     -- Adjust position for scaling to keep text centered
     local offsetX = (1 - scaleX) * 20
     local offsetY = (1 - scaleY) * 10
+    local scoreCharLen = #tostring(stats.score)
+    
+    local numb_of_x = maxScoreCharLen - scoreCharLen
+    
+    -- Repeat 'x' to fill the remaining characters
+    local repeatedString = string.rep("x", numb_of_x)  -- Repeat 'x' numb_of_x times
+    
+    -- Calculate the width of the text to prevent it from going off-screen
+    local textWidth = love.graphics.getFont():getWidth(repeatedString .. stats.score) * scaleX
+    local textHeight = love.graphics.getFont():getHeight() * scaleY
 
-    love.graphics.print(stats.score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
+    -- Adjust X position if the scaled text goes out of screen
+    if x + textWidth > screenWidth then
+        x = screenWidth - textWidth  -- Prevent text from going off the right side
+    end
+    
+    -- Adjust Y position if the scaled text goes out of screen
+    if y + textHeight > screenHeight then
+        y = screenHeight - textHeight  -- Prevent text from going off the bottom
+    end
+
+    -- Print the result, with 'x' padding and the score
+    love.graphics.print(repeatedString .. stats.score, x + offsetX, y + offsetY, 0, scaleX, scaleY)
 end
+
 
 -- Function to push the player back with an easing effect
 function pushPlayerBack(bullet)
