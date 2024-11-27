@@ -198,6 +198,7 @@ function love.draw()
     
     -- Draw the player with scaling applied for heartbeat effect
     love.graphics.push()
+    love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
     love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
     love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
     love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
