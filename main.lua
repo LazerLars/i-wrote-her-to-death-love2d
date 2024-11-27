@@ -12,6 +12,8 @@ local tween = require("tween")
 local allTextFilesNamesTable = {}
 local commandsTable = {}
 local timePassed = 0
+-- Table to hold text data
+local rotatingText = {}
 
 --settings
 -- local screenWidth = 320
@@ -158,6 +160,8 @@ function love.load()
     enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
     IncrementEnemyCounter()
     playerHeartbeatEffect_start()
+
+    createText(screenWidth/2, screenHeight/2, "GAME OVER")
 end
 
 function love.update(dt)
@@ -190,6 +194,8 @@ function love.update(dt)
         score_update(dt)
         -- Reset the bulletAdded flag at the beginning of each frame
         bulletAdded = false
+        
+        drawUpdate(dt)
 end
     end
     
@@ -256,6 +262,8 @@ function love.draw()
     DrawBullets()
     shells_draw()
     score_draw()
+
+    drawText()
 
     maid64.finish()--finishes the maid64 process
 end
@@ -1171,4 +1179,51 @@ function ResetGame()
     enemyFunctions.prevDecilineTime = 0
     enemyFunctions.ResetEnemyList()
 
+end
+
+-- Function to create the text
+function createText(x, y, text)
+    rotatingText = {
+        x = x,
+        y = y,
+        text = text,
+        rotation = 0, -- Start with no rotation
+        targetRotation = 35, -- Target rotation angle in degrees
+        duration = 2, -- Duration of the tween animation
+        tweenObj = nil -- Placeholder for the tween object
+    }
+
+    -- Start the initial tween
+    rotatingText.tweenObj = tween.new(
+        rotatingText.duration,
+        rotatingText,
+        { rotation = rotatingText.targetRotation },
+        "inOutQuad"
+    )
+end
+
+-- Function to update the tween
+function drawUpdate(dt)
+    if rotatingText.tweenObj then
+        local complete = rotatingText.tweenObj:update(dt)
+        if complete then
+            -- Reverse the rotation direction
+            rotatingText.targetRotation = -rotatingText.targetRotation
+            rotatingText.tweenObj = tween.new(
+                rotatingText.duration,
+                rotatingText,
+                { rotation = rotatingText.targetRotation },
+                "inOutQuad"
+            )
+        end
+    end
+end
+
+-- Function to draw the text
+function drawText()
+    love.graphics.push()
+    love.graphics.translate(rotatingText.x, rotatingText.y)
+    love.graphics.rotate(math.rad(rotatingText.rotation))
+    love.graphics.print(rotatingText.text, 0, 0)
+    love.graphics.pop()
 end
