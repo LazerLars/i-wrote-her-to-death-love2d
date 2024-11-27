@@ -9,6 +9,9 @@ local enemyFunctions = require("enemyFunctions")
 local tween = require("tween") 
 
 
+local allTextFilesNamesTable = {}
+local timePassed = 0
+
 --settings
 -- local screenWidth = 320
 screenWidth = 480
@@ -109,13 +112,17 @@ function love.load()
     love.window.setTitle("I WROTE HER TO DEATH")
 
     print("lets go")
-    ReadTxtFileToATable(filename)
-    print(wordsTable[9959])
+    GetAllTextFileNames()
+    for index, filename in ipairs(allTextFilesNamesTable) do
+        print(filename)
+        ReadTxtFileToATable(filename)
+    end
+    -- ReadTxtFileToATable(filename)
+    
     wordsTable = Shuffle(wordsTable)
     wordsTable = AdvancedShuffle(wordsTable)
     
-    print(wordsTable[9959])
-
+    print(#wordsTable)
     --optional settings for window
     love.window.setMode(screenWidth * screenScaler, screenHeight * screenScaler, {resizable=true, vsync=false, minwidth=200, minheight=200})
     
@@ -151,6 +158,7 @@ function love.update(dt)
     if game.pause then
         local pause = 1 -- do nothing
     else
+        timePassed = timePassed + dt
         CheckForEnemyCounterReset()
         --check the player stays withinscreen
         playerFunctions.PlayerDontExitScreen(player)
@@ -1089,4 +1097,46 @@ function playerHeartbeatEffect_update(dt)
             heartbeatTween = tween.new(60 / heartbeatBPM / 2, {scale = heartbeatScale}, {scale = heartbeatScale == 1 and 1.2 or 1}, "inOutQuad")
         end
     end
+end
+
+function GetAllTextFileNames()
+    local folder = "texts/"
+
+    -- Get a list of all items in the folder
+    local items = love.filesystem.getDirectoryItems(folder)
+
+    -- Loop through each item
+    for _, item in ipairs(items) do
+        local filePath = folder .. item
+
+        print(filePath)
+        table.insert(allTextFilesNamesTable, filePath)
+    end
+
+--     local folder = "texts/"
+
+-- -- Get a list of all items in the folder
+-- local items = love.filesystem.getDirectoryItems(folder)
+
+-- -- Loop through each item
+-- for _, item in ipairs(items) do
+--     local filePath = folder .. item
+
+--     -- Check if the item is a file
+--     if love.filesystem.getInfo(filePath, "file") then
+--         -- Remove the .txt extension using string matching
+--         local filenameWithoutExtension = item:gsub("%.txt$", "")
+
+--         -- Read the file
+--         local content, err = love.filesystem.read(filePath)
+--         if content then
+--             print("File:", filenameWithoutExtension)
+--             print("Content:", content)
+--         else
+--             print("Error reading file:", filePath, err)
+--         end
+--     else
+--         print("Skipping non-file:", filePath)
+--     end
+-- end
 end

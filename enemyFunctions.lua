@@ -52,7 +52,7 @@ function ManageEnemies(player,dt)
     end
 
 function addEnemy(word, player)
-    local minDistanceToPlayer = 25
+    local minDistanceToPlayer = 45
     local enemy = {
         width = 8,
         height = 8,
