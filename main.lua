@@ -171,7 +171,7 @@ function love.update(dt)
     if game.pause then
         local pause = 1 -- do nothing
         if tippingText_draw_bool == false then
-            tippingText_create(screenWidth/2, screenHeight/2, "GAME OVER")
+            tippingText_create(screenWidth/2, screenHeight/2, "breaks are for pussies... LETS GOOOOO")
             tippingText_draw_bool = true
         end
         tippingText_update(dt)
@@ -216,62 +216,65 @@ function love.draw()
     
     Colors_pico8(1) -- 1 = red
     
-    -- Draw the player with scaling applied for heartbeat effect
-    love.graphics.push()
-    love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
+    
 
     -- on pause write all player commands to the screen
     if game.pause then
+        tippingText_draw()
         local startPosY = 30
+        
         love.graphics.print(":::COMMANDS:::", 1, 20)
         for index, value in ipairs(commandsTable) do
             
             love.graphics.print(value, 1, startPosY)
             startPosY = startPosY + 10
         end
+    else
+        -- Draw the player with scaling applied for heartbeat effect
+        love.graphics.push()
+        love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
+
+        love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
+        love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
+        love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
+        love.graphics.pop()
+        --can also draw shapes and get mouse position
+        love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
+        
+        -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
+        Colors_pico8(9)
+        -- Define the heart size (width and height)
+        local heart_width = 4
+        local heart_height = 4
+
+        -- Define the spacing between hearts
+        local heart_spacing = 4
+
+        for i = 1, player.health, 1 do
+            -- Calculate the x-coordinate for the current heart
+            local x = (i - 1) * (heart_width + heart_spacing) + 1
+
+            -- Draw the heart rectangle (adjust for your heart shape)
+            love.graphics.rectangle('fill', x, 4, heart_width, heart_height)
+        end
+        -- love.graphics.setColor(255/255, 163/255, 0/255)
+        -- Colors_winXP(9)
+        
+        -- love.graphics.print("Life: " .. player.health, 260,8)
+        local lineSpacing = 14
+        love.graphics.print('> ' .. textInput, 0, screenHeight-(lineSpacing))
+        -- love.graphics.setFont(font, 4)
+        love.graphics.print('' .. oldText, 14, screenHeight-(lineSpacing * 3))
+        love.graphics.print('' .. text, 14, screenHeight-(14*2))
+
+        --draw enemies
+        enemyFunctions.DrawEnemies()
+        explosion_draw()
+        DrawBullets()
+        shells_draw()
+        score_draw()
     end
-    love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
-    love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
-    love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
-    love.graphics.pop()
-    --can also draw shapes and get mouse position
-    love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
     
-    -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
-    Colors_pico8(9)
-    -- Define the heart size (width and height)
-    local heart_width = 4
-    local heart_height = 4
-
-    -- Define the spacing between hearts
-    local heart_spacing = 4
-
-    for i = 1, player.health, 1 do
-        -- Calculate the x-coordinate for the current heart
-        local x = (i - 1) * (heart_width + heart_spacing) + 1
-
-        -- Draw the heart rectangle (adjust for your heart shape)
-        love.graphics.rectangle('fill', x, 4, heart_width, heart_height)
-    end
-    -- love.graphics.setColor(255/255, 163/255, 0/255)
-    -- Colors_winXP(9)
-    
-    -- love.graphics.print("Life: " .. player.health, 260,8)
-    local lineSpacing = 14
-    love.graphics.print('> ' .. textInput, 0, screenHeight-(lineSpacing))
-    -- love.graphics.setFont(font, 4)
-    love.graphics.print('' .. oldText, 14, screenHeight-(lineSpacing * 3))
-    love.graphics.print('' .. text, 14, screenHeight-(14*2))
-
-    --draw enemies
-    enemyFunctions.DrawEnemies()
-    explosion_draw()
-    DrawBullets()
-    shells_draw()
-    score_draw()
-    if game.pause then
-        tippingText_draw()
-    end
     
 
     maid64.finish()--finishes the maid64 process
@@ -1219,8 +1222,8 @@ function tippingText_create(x, y, text)
         text = text,
         font = font,
         rotation = 0, -- Start with no rotation
-        targetRotation = 35, -- Target rotation angle in degrees
-        duration = 2, -- Duration of the tween animation
+        targetRotation = 60, -- Target rotation angle in degrees
+        duration = 3, -- Duration of the tween animation
         tweenObj = nil, -- Placeholder for the tween object
         width = font:getWidth(text),
         height = font:getHeight(),
@@ -1264,7 +1267,8 @@ function tippingText_draw()
 
     -- Draw the main text
     
-    love.graphics.setColor(241/255, 173/255, 255/255)
+    
     love.graphics.print(tippingText.text, -width / 2, -height / 2)
+    love.graphics.setColor(241/255, 173/255, 255/255)
     love.graphics.pop()
 end
