@@ -1,0 +1,14 @@
+:pause
+:reload
+:female
+:male
+:downright
+:upright
+:downleft
+:upleft
+:down
+:up
+:right
+:left
+:stop
+:move x,y (move 10,20)

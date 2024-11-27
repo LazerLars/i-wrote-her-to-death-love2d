@@ -10,6 +10,7 @@ local tween = require("tween")
 
 
 local allTextFilesNamesTable = {}
+local commandsTable = {}
 local timePassed = 0
 
 --settings
@@ -115,8 +116,14 @@ function love.load()
     GetAllTextFileNames()
     for index, filename in ipairs(allTextFilesNamesTable) do
         print(filename)
-        ReadTxtFileToATable(filename)
+        ReadTxtFileToATable(filename, wordsTable)
     end
+
+    -- load all player commands into a table
+    ReadTxtFileToATable("commands.txt", commandsTable)
+    -- for index, value in ipairs(commandsTable) do
+    --     print(value)
+    -- end
     -- ReadTxtFileToATable(filename)
     
     wordsTable = Shuffle(wordsTable)
@@ -199,6 +206,16 @@ function love.draw()
     -- Draw the player with scaling applied for heartbeat effect
     love.graphics.push()
     love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
+
+    if game.pause then
+        local startPosY = 30
+        love.graphics.print(":::COMMANDS:::", 1, 20)
+        for index, value in ipairs(commandsTable) do
+            
+            love.graphics.print(value, 1, startPosY)
+            startPosY = startPosY + 10
+        end
+    end
     love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
     love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
     love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
@@ -275,10 +292,19 @@ function love.keypressed(key)
         play_gun_click = true
         --CheckForEnemyWordBool = true
     end
-    if key == "." then
-        enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
-        IncrementEnemyCounter()
+
+    if key == "escape" then
+        print("pause game....")
+        if game.pause == true then
+            game.pause = false
+        else
+            game.pause = true
+        end
     end
+    -- if key == "." then
+    --     enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
+    --     IncrementEnemyCounter()
+    -- end
 end
 
 function CheckInputForEnemyWord(enemyList, textInput)
@@ -306,6 +332,11 @@ function CheckInputForEnemyWord(enemyList, textInput)
 end
 
 function CheckPlayerCommands()
+
+    if string.find(textInput, ":add enemy") then
+        enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
+        IncrementEnemyCounter()
+    end
     if string.find(textInput, "move") then
         local x, y = ExtractCoordinates(textInput)
         if type(x) == "number" and type(y) == "number" then
@@ -345,7 +376,7 @@ function CheckPlayerCommands()
         player.moveToY = screenHeight
         player.moveToX = screenWidth
     end
-    if string.find(textInput, ":take care now bye bye then") then
+    if string.find(textInput, ":kapow") then
         enemyFunctions.ResetEnemyList()
     end
 
@@ -529,7 +560,7 @@ function ReadTxtFileIntoATableEachLetterWillHaveItsOwnLetter(filename)
     -- Print the tables (for verification)
 end
 
-function ReadTxtFileToATable(filename)
+function ReadTxtFileToATable(filename, destinationTable)
    -- Open the file in read mode
 --    local file, err = io.open(filename, "r")
     local file, err = love.filesystem.read(filename)
@@ -541,13 +572,13 @@ function ReadTxtFileToATable(filename)
 
    -- Read lines and insert them into the table
    for line in file:gmatch("[^\r\n]+") do
-       table.insert(wordsTable, line)
+       table.insert(destinationTable, line)
    end
 
-   -- Print the lines to the console (for verification)
-   for i, line in ipairs(wordsTable) do
-       print("Line " .. i .. ": " .. line)
-   end
+--    -- Print the lines to the console (for verification)
+--    for i, line in ipairs(destinationTable) do
+--        print("Line " .. i .. ": " .. line)
+--    end
 end
 
 
@@ -1113,31 +1144,4 @@ function GetAllTextFileNames()
         print(filePath)
         table.insert(allTextFilesNamesTable, filePath)
     end
-
---     local folder = "texts/"
-
--- -- Get a list of all items in the folder
--- local items = love.filesystem.getDirectoryItems(folder)
-
--- -- Loop through each item
--- for _, item in ipairs(items) do
---     local filePath = folder .. item
-
---     -- Check if the item is a file
---     if love.filesystem.getInfo(filePath, "file") then
---         -- Remove the .txt extension using string matching
---         local filenameWithoutExtension = item:gsub("%.txt$", "")
-
---         -- Read the file
---         local content, err = love.filesystem.read(filePath)
---         if content then
---             print("File:", filenameWithoutExtension)
---             print("Content:", content)
---         else
---             print("Error reading file:", filePath, err)
---         end
---     else
---         print("Skipping non-file:", filePath)
---     end
--- end
 end
