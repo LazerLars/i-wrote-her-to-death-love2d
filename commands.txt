@@ -2,6 +2,7 @@
 :reload
 :female
 :male
+:restart game
 :downright
 :upright
 :downleft

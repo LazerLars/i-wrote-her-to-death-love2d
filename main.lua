@@ -207,6 +207,7 @@ function love.draw()
     love.graphics.push()
     love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
 
+    -- on pause write all player commands to the screen
     if game.pause then
         local startPosY = 30
         love.graphics.print(":::COMMANDS:::", 1, 20)
@@ -333,6 +334,9 @@ end
 
 function CheckPlayerCommands()
 
+    if string.find(textInput, ":restart game") then
+        ResetGame()
+    end
     if string.find(textInput, ":add enemy") then
         enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
         IncrementEnemyCounter()
@@ -633,14 +637,17 @@ end
 function CheckForEnemyCounterReset()
     if enemyCounter >= #wordsTable then
         print('reset enemyCounter...')
-        enemyCounter = 1
-        AdvancedShuffle(wordsTable)
-        Shuffle(wordsTable)
-        AdvancedShuffle(wordsTable)
+        ResetEnemyCounter()
         
     end
 end
 
+function ResetEnemyCounter()
+    enemyCounter = 1
+    AdvancedShuffle(wordsTable)
+    Shuffle(wordsTable)
+    AdvancedShuffle(wordsTable)
+end
 
 function Colors_winXP(color)
     local myColor = love.graphics.setColor(0/255, 0/255, 0/255) -- Default color, can be any base color
@@ -1144,4 +1151,21 @@ function GetAllTextFileNames()
         print(filePath)
         table.insert(allTextFilesNamesTable, filePath)
     end
+end
+
+function ResetGame()
+    timePassed = 0
+    ResetEnemyCounter()
+    -- TODO:
+    -- missing to fix reseting score and everything
+    -- end
+    stats = {
+        score = 0,
+        correctWords = 0,
+        rightWords = 0,
+        playTime = 0,
+        reloadCount = 0
+    }
+
+    
 end
