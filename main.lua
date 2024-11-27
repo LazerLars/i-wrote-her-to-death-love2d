@@ -305,6 +305,7 @@ function love.keypressed(key)
     -- if key == "." then
     --     enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
     --     IncrementEnemyCounter()
+    --     ResetGame()
     -- end
 end
 
@@ -336,6 +337,10 @@ function CheckPlayerCommands()
 
     if string.find(textInput, ":restart game") then
         ResetGame()
+    end
+
+    if string.find(textInput, ":time") then
+        timePassed = 0
     end
     if string.find(textInput, ":add enemy") then
         enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
@@ -1156,16 +1161,14 @@ end
 function ResetGame()
     timePassed = 0
     ResetEnemyCounter()
-    -- TODO:
-    -- missing to fix reseting score and everything
-    -- end
-    stats = {
-        score = 0,
-        correctWords = 0,
-        rightWords = 0,
-        playTime = 0,
-        reloadCount = 0
-    }
+    stats.score = 0
+    stats.correctWords = 0
+    stats.playTime = 0
+    stats.reloadCount = 0
+    enemyFunctions.enemySpawnTimer = 5
+    enemyFunctions.prevSpawnTime = 0
+    enemyFunctions.spawnTimeDecliner = 5
+    enemyFunctions.prevDecilineTime = 0
+    enemyFunctions.ResetEnemyList()
 
-    
 end
