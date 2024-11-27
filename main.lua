@@ -31,7 +31,7 @@ local oldText = ""
 local player = {
     width = 8,
     height = 8,
-    health = 5,
+    health = 1,
     x = screenWidth /2,
     y = screenHeight/2,
     speed = 50,
@@ -54,7 +54,8 @@ local heartbeatTween               -- Tween for the heartbeat effect
 
 
 local game = {
-    pause = false
+    pause = false,
+    gameOver = false
 }
 
 
@@ -167,11 +168,17 @@ function love.load()
 end
 
 function love.update(dt)
-
-    if game.pause then
+    checkForGameOver()
+    if game.pause and game.gameOver == false then
         local pause = 1 -- do nothing
         if tippingText_draw_bool == false then
             tippingText_create(screenWidth/2, screenHeight/2, "breaks are for pussies... LETS GOOOOO")
+            tippingText_draw_bool = true
+        end
+        tippingText_update(dt)
+    elseif game.pause == false and game.gameOver == true then
+        if tippingText_draw_bool == false then
+            tippingText_create(screenWidth/2, screenHeight/2, "El jefe, NO? You done, los muchachos")
             tippingText_draw_bool = true
         end
         tippingText_update(dt)
@@ -219,8 +226,14 @@ function love.draw()
     
 
     -- on pause write all player commands to the screen
-    if game.pause then
+    if game.pause and game.gameOver == false then
         tippingText_draw()
+
+        Colors_pico8(1) -- red
+
+        textInputElements_draw()
+        love.graphics.setColor(241/255, 173/255, 255/255) -- PURPLE
+
         local startPosY = 30
         
         love.graphics.print(":::COMMANDS:::", 1, 20)
@@ -229,6 +242,10 @@ function love.draw()
             love.graphics.print(value, 1, startPosY)
             startPosY = startPosY + 10
         end
+
+    elseif game.pause == false and game.gameOver == true then
+        print("game over")
+        tippingText_draw()
     else
         -- Draw the player with scaling applied for heartbeat effect
         love.graphics.push()
@@ -261,11 +278,7 @@ function love.draw()
         -- Colors_winXP(9)
         
         -- love.graphics.print("Life: " .. player.health, 260,8)
-        local lineSpacing = 14
-        love.graphics.print('> ' .. textInput, 0, screenHeight-(lineSpacing))
-        -- love.graphics.setFont(font, 4)
-        love.graphics.print('' .. oldText, 14, screenHeight-(lineSpacing * 3))
-        love.graphics.print('' .. text, 14, screenHeight-(14*2))
+        textInputElements_draw()
 
         --draw enemies
         enemyFunctions.DrawEnemies()
@@ -316,7 +329,7 @@ function love.keypressed(key)
 
     if key == "escape" then
         print("pause game....")
-        if game.pause == true then
+        if game.pause == true and game.gameOver == false then
             game.pause = false
         else
             game.pause = true
@@ -428,7 +441,7 @@ function CheckPlayerCommands()
     
     if string.find(textInput, ":pause") then
         print("pause game....")
-        if game.pause == true then
+        if game.pause == true and game.gameOver == false then
             game.pause = false
         else
             game.pause = true
@@ -1190,6 +1203,7 @@ function ResetGame()
     enemyFunctions.spawnTimeDecliner = 5
     enemyFunctions.prevDecilineTime = 0
     enemyFunctions.ResetEnemyList()
+    player.health = 1
 
 end
 
@@ -1271,4 +1285,21 @@ function tippingText_draw()
     love.graphics.print(tippingText.text, -width / 2, -height / 2)
     love.graphics.setColor(241/255, 173/255, 255/255)
     love.graphics.pop()
+end
+
+function textInputElements_draw()
+
+    local lineSpacing = 14
+    love.graphics.print('> ' .. textInput, 0, screenHeight-(lineSpacing))
+    -- love.graphics.setFont(font, 4)
+    love.graphics.print('' .. oldText, 14, screenHeight-(lineSpacing * 3))
+    love.graphics.print('' .. text, 14, screenHeight-(14*2))
+
+end
+
+function checkForGameOver()
+    if player.health <= 0 then
+        game.gameOver = true
+        game.pause = false
+    end
 end
