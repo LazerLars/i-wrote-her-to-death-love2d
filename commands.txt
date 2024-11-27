@@ -1,4 +1,5 @@
 :pause
+:new game
 :reload
 :female
 :male

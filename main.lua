@@ -216,15 +216,8 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-    
-    -- set background color
-    -- Colors_pico8(16, true) -- 6
-    
-    
-    Colors_pico8(1) -- 1 = red
-    
-    
 
+    Colors_pico8(1) -- 1 = red
     -- on pause write all player commands to the screen
     if game.pause and game.gameOver == false then
         tippingText_draw()
@@ -234,18 +227,13 @@ function love.draw()
         textInputElements_draw()
         love.graphics.setColor(241/255, 173/255, 255/255) -- PURPLE
 
-        local startPosY = 30
-        
-        love.graphics.print(":::COMMANDS:::", 1, 20)
-        for index, value in ipairs(commandsTable) do
-            
-            love.graphics.print(value, 1, startPosY)
-            startPosY = startPosY + 10
-        end
+       commands_draw()
 
     elseif game.pause == false and game.gameOver == true then
         print("game over")
         tippingText_draw()
+        textInputElements_draw()
+        commands_draw()
     else
         -- Draw the player with scaling applied for heartbeat effect
         love.graphics.push()
@@ -368,7 +356,7 @@ end
 
 function CheckPlayerCommands()
 
-    if string.find(textInput, ":restart game") then
+    if string.find(textInput, ":restart game") or string.find(textInput, ":new game") then
         ResetGame()
     end
 
@@ -1301,5 +1289,17 @@ function checkForGameOver()
     if player.health <= 0 then
         game.gameOver = true
         game.pause = false
+    end
+end
+
+function commands_draw()
+
+    local startPosY = 30
+        
+    love.graphics.print(":::COMMANDS:::", 1, 20)
+    for index, value in ipairs(commandsTable) do
+        
+        love.graphics.print(value, 1, startPosY)
+        startPosY = startPosY + 10
     end
 end
