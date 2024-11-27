@@ -13,7 +13,8 @@ local allTextFilesNamesTable = {}
 local commandsTable = {}
 local timePassed = 0
 -- Table to hold text data
-local rotatingText = {}
+local tippingText = {}
+local tippingText_draw_bool = false
 
 --settings
 -- local screenWidth = 320
@@ -161,14 +162,21 @@ function love.load()
     IncrementEnemyCounter()
     playerHeartbeatEffect_start()
 
-    createText(screenWidth/2, screenHeight/2, "GAME OVER")
+    
+    
 end
 
 function love.update(dt)
 
     if game.pause then
         local pause = 1 -- do nothing
+        if tippingText_draw_bool == false then
+            tippingText_create(screenWidth/2, screenHeight/2, "GAME OVER")
+            tippingText_draw_bool = true
+        end
+        tippingText_update(dt)
     else
+        tippingText_draw_bool = false
         timePassed = timePassed + dt
         CheckForEnemyCounterReset()
         --check the player stays withinscreen
@@ -194,8 +202,7 @@ function love.update(dt)
         score_update(dt)
         -- Reset the bulletAdded flag at the beginning of each frame
         bulletAdded = false
-        
-        drawUpdate(dt)
+
 end
     end
     
@@ -262,8 +269,10 @@ function love.draw()
     DrawBullets()
     shells_draw()
     score_draw()
-
-    drawText()
+    if game.pause then
+        tippingText_draw()
+    end
+    
 
     maid64.finish()--finishes the maid64 process
 end
@@ -1181,38 +1190,62 @@ function ResetGame()
 
 end
 
+-- -- Function to create the text
+-- function createText(x, y, text)
+--     rotatingText = {
+--         x = x,
+--         y = y,
+--         text = text,
+--         rotation = 0, -- Start with no rotation
+--         targetRotation = 35, -- Target rotation angle in degrees
+--         duration = 2, -- Duration of the tween animation
+--         tweenObj = nil -- Placeholder for the tween object
+--     }
+
+--     -- Start the initial tween
+--     rotatingText.tweenObj = tween.new(
+--         rotatingText.duration,
+--         rotatingText,
+--         { rotation = rotatingText.targetRotation },
+--         "inOutQuad"
+--     )
+-- end
 -- Function to create the text
-function createText(x, y, text)
-    rotatingText = {
+function tippingText_create(x, y, text)
+    font = love.graphics.getFont() -- Use provided font or default
+    tippingText = {
         x = x,
         y = y,
         text = text,
+        font = font,
         rotation = 0, -- Start with no rotation
         targetRotation = 35, -- Target rotation angle in degrees
         duration = 2, -- Duration of the tween animation
-        tweenObj = nil -- Placeholder for the tween object
+        tweenObj = nil, -- Placeholder for the tween object
+        width = font:getWidth(text),
+        height = font:getHeight(),
     }
 
     -- Start the initial tween
-    rotatingText.tweenObj = tween.new(
-        rotatingText.duration,
-        rotatingText,
-        { rotation = rotatingText.targetRotation },
+    tippingText.tweenObj = tween.new(
+        tippingText.duration,
+        tippingText,
+        { rotation = tippingText.targetRotation },
         "inOutQuad"
     )
 end
 
 -- Function to update the tween
-function drawUpdate(dt)
-    if rotatingText.tweenObj then
-        local complete = rotatingText.tweenObj:update(dt)
+function tippingText_update(dt)
+    if tippingText.tweenObj then
+        local complete = tippingText.tweenObj:update(dt)
         if complete then
             -- Reverse the rotation direction
-            rotatingText.targetRotation = -rotatingText.targetRotation
-            rotatingText.tweenObj = tween.new(
-                rotatingText.duration,
-                rotatingText,
-                { rotation = rotatingText.targetRotation },
+            tippingText.targetRotation = -tippingText.targetRotation
+            tippingText.tweenObj = tween.new(
+                tippingText.duration,
+                tippingText,
+                { rotation = tippingText.targetRotation },
                 "inOutQuad"
             )
         end
@@ -1220,10 +1253,18 @@ function drawUpdate(dt)
 end
 
 -- Function to draw the text
-function drawText()
+function tippingText_draw()
+    local x, y = tippingText.x, tippingText.y
+    local width, height = tippingText.width, tippingText.height
+
     love.graphics.push()
-    love.graphics.translate(rotatingText.x, rotatingText.y)
-    love.graphics.rotate(math.rad(rotatingText.rotation))
-    love.graphics.print(rotatingText.text, 0, 0)
+    -- Translate to center of text for rotation
+    love.graphics.translate(x, y)
+    love.graphics.rotate(math.rad(tippingText.rotation))
+
+    -- Draw the main text
+    
+    love.graphics.setColor(241/255, 173/255, 255/255)
+    love.graphics.print(tippingText.text, -width / 2, -height / 2)
     love.graphics.pop()
 end
