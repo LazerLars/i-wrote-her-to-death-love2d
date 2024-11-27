@@ -1,6 +1,7 @@
 :pause
 :new game
 :reload
+:moar (add enemy)
 :female
 :male
 :restart game

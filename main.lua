@@ -16,6 +16,10 @@ local timePassed = 0
 local tippingText = {}
 local tippingText_draw_bool = false
 
+-- Table to hold active text animations
+local textObjects = {}
+
+
 --settings
 -- local screenWidth = 320
 screenWidth = 480
@@ -164,10 +168,10 @@ function love.load()
     playerHeartbeatEffect_start()
 
     
-    
 end
 
 function love.update(dt)
+    textObjects_update(dt)
     checkForGameOver()
     if game.pause and game.gameOver == false then
         local pause = 1 -- do nothing
@@ -216,7 +220,7 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-
+    textObjects_draw()
     Colors_pico8(1) -- 1 = red
     -- on pause write all player commands to the screen
     if game.pause and game.gameOver == false then
@@ -357,14 +361,16 @@ end
 function CheckPlayerCommands()
 
     if string.find(textInput, ":restart game") or string.find(textInput, ":new game") then
+        textObjects_create(16, screenHeight - 14, ":NEW GAME")
         ResetGame()
     end
 
     if string.find(textInput, ":time") then
         timePassed = 0
     end
-    if string.find(textInput, ":add enemy") then
+    if string.find(textInput, ":moar") then
         enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
+        textObjects_create(16, screenHeight - 14, ":MOAR")
         IncrementEnemyCounter()
     end
     if string.find(textInput, "move") then
@@ -408,32 +414,38 @@ function CheckPlayerCommands()
     end
     if string.find(textInput, ":kapow") then
         enemyFunctions.ResetEnemyList()
+        textObjects_create(16, screenHeight - 14, ":kapow")
     end
 
     if string.find(textInput, ":male") then
         print("changing to male....")
         player.female = false
+        textObjects_create(16, screenHeight - 14, ":MALE")
     end
 
     if string.find(textInput, ":female") then
         print("changing to female....")
         player.female = true
+        textObjects_create(16, screenHeight - 14, ":FEMALE")
     end
 
     
     if string.find(textInput, ":reload") then
         stats.reloadCount = stats.reloadCount + 1
         play_shotgun_reload_sound()
+        textObjects_create(16, screenHeight - 14, ":RELOAD")
     end
 
     
     if string.find(textInput, ":pause") then
-        print("pause game....")
         if game.pause == true and game.gameOver == false then
             game.pause = false
+            textObjects_create(16, screenHeight - 14, ":RESUME")
         else
             game.pause = true
+            textObjects_create(16, screenHeight - 14, ":PAUSE")
         end
+        
     end
 
 
@@ -1302,4 +1314,48 @@ function commands_draw()
         love.graphics.print(value, 1, startPosY)
         startPosY = startPosY + 10
     end
+end
+
+-- Function to create a new text animation
+function textObjects_create(x, y, text)
+    font =  love.graphics.getFont() -- Default to current font if not provided
+    local textObject = {
+        x = x,
+        y = y,
+        text = text,
+        font = font,
+        alpha = 1, -- Opacity (1 = fully visible)
+        tweenObj = nil -- Placeholder for the tween
+    }
+
+    -- Create the tween to animate the text upwards and fade out over 2 seconds
+    textObject.tweenObj = tween.new(
+        2, -- Duration in seconds
+        textObject,
+        { y = y - 50, alpha = 0 }, -- Move upwards and fade out
+        "inOutQuad" -- Easing function
+    )
+
+    table.insert(textObjects, textObject) -- Add the new text to the table
+end
+
+-- Function to update all text animations
+function textObjects_update(dt)
+    for i = #textObjects, 1, -1 do -- Iterate backward to safely remove items
+        local textObject = textObjects[i]
+        local complete = textObject.tweenObj:update(dt)
+        if complete then
+            table.remove(textObjects, i) -- Remove the text once the animation is done
+        end
+    end
+end
+
+-- Function to draw all active text animations
+function textObjects_draw()
+    for _, textObject in ipairs(textObjects) do
+        love.graphics.setFont(textObject.font)
+        love.graphics.setColor(1, 1, 1, textObject.alpha) -- White text with varying opacity
+        love.graphics.print(textObject.text, textObject.x, textObject.y)
+    end
+    
 end
