@@ -11,7 +11,6 @@ local tween = require("tween")
 
 local allTextFilesNamesTable = {}
 local commandsTable = {}
-local timePassed = 0
 -- Table to hold text data
 local tippingText = {}
 local tippingText_draw_bool = false
@@ -35,7 +34,7 @@ local oldText = ""
 local player = {
     width = 8,
     height = 8,
-    health = 1,
+    health = 3,
     x = screenWidth /2,
     y = screenHeight/2,
     speed = 50,
@@ -101,9 +100,9 @@ local shellSettings = {
 local stats = {
     score = 0,
     correctWords = 0,
-    rightWords = 0,
     playTime = 0,
-    reloadCount = 0
+    reloadCount = 0,
+    wrongWords = 0
 }
 local scoreEffect = {
     scale = 1,              -- Current scale of the score text (for scaling effect)
@@ -188,7 +187,7 @@ function love.update(dt)
         tippingText_update(dt)
     else
         tippingText_draw_bool = false
-        timePassed = timePassed + dt
+        stats.playTime = stats.playTime + dt
         CheckForEnemyCounterReset()
         --check the player stays withinscreen
         playerFunctions.PlayerDontExitScreen(player)
@@ -238,10 +237,22 @@ function love.draw()
         tippingText_draw()
         textInputElements_draw()
         commands_draw()
+        local startPosY = 8
+        local startPosX = screenWidth - 200
+        for key, value in pairs(stats) do
+            if key == "playTime" then
+                love.graphics.print(key .. ":" .. string.format("%.2f", value), startPosX, startPosY)
+            else
+                love.graphics.print(key .. ":" .. value, startPosX, startPosY)
+ 
+            end
+            startPosY = startPosY + 14
+        end
+        
     else
         -- Draw the player with scaling applied for heartbeat effect
         love.graphics.push()
-        love.graphics.print(string.format("%.2f", timePassed), (screenWidth/2)-(8*3), 8)
+        love.graphics.print(string.format("%.2f", stats.playTime), (screenWidth/2)-(8*3), 8)
 
         love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
         love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
@@ -351,6 +362,7 @@ function CheckInputForEnemyWord(enemyList, textInput)
             -- only play once per return click
             if play_gun_click then
                 play_gun_clock_sound()
+                stats.wrongWords = stats.wrongWords + 1
                 play_gun_click = false
                 
             end
@@ -362,11 +374,12 @@ function CheckPlayerCommands()
 
     if string.find(textInput, ":restart game") or string.find(textInput, ":new game") then
         textObjects_create(16, screenHeight - 14, ":NEW GAME")
+        game.gameOver = false
         ResetGame()
     end
 
     if string.find(textInput, ":time") then
-        timePassed = 0
+        stats.playTime = 0
     end
     if string.find(textInput, ":moar") then
         enemyFunctions.addEnemy(wordsTable[enemyCounter], player)
@@ -833,22 +846,15 @@ function CheckForCollision()
         for bulletIndex, bullet in ipairs(bulletList) do
            
             if isColliding(enemy, bullet) then
-                -- print(enemy.word)
-                -- print(bullet.word)
+
                 if enemy.word == bullet.word then
                     -- Collision detected, remove enemy and bullet
                     table.remove(enemyList, enemyIndex)
                     table.remove(bulletList, bulletIndex)
                     createExplosion(enemy.x, enemy.y)
-                    -- score = score + 1
-                    -- randomScoreEffect = randomInt(1,50)
-                    -- if randomScoreEffect >= 25 then
-                    --     addScore(10, 'shake')
-                    -- else
-                    --     addScore(10, 'scale')
-                    -- end
-                    addScore(10, (randomInt(1,50) >= 25) and 'shake' or 'scale')
 
+                    addScore(10, (randomInt(1,50) >= 25) and 'shake' or 'scale')
+                    stats.correctWords = stats.correctWords + 1
                     -- Exit the loop to avoid processing further bullets (optional depending on your game logic)
                     break
                 end
@@ -1192,41 +1198,25 @@ function GetAllTextFileNames()
 end
 
 function ResetGame()
-    timePassed = 0
-    ResetEnemyCounter()
+    stats.playTime = 0
     stats.score = 0
     stats.correctWords = 0
     stats.playTime = 0
     stats.reloadCount = 0
+    stats.wrongWords = 0
+    
+    player.health = 3
+    
     enemyFunctions.enemySpawnTimer = 5
     enemyFunctions.prevSpawnTime = 0
     enemyFunctions.spawnTimeDecliner = 5
     enemyFunctions.prevDecilineTime = 0
+    
+    ResetEnemyCounter()
     enemyFunctions.ResetEnemyList()
-    player.health = 1
 
 end
 
--- -- Function to create the text
--- function createText(x, y, text)
---     rotatingText = {
---         x = x,
---         y = y,
---         text = text,
---         rotation = 0, -- Start with no rotation
---         targetRotation = 35, -- Target rotation angle in degrees
---         duration = 2, -- Duration of the tween animation
---         tweenObj = nil -- Placeholder for the tween object
---     }
-
---     -- Start the initial tween
---     rotatingText.tweenObj = tween.new(
---         rotatingText.duration,
---         rotatingText,
---         { rotation = rotatingText.targetRotation },
---         "inOutQuad"
---     )
--- end
 -- Function to create the text
 function tippingText_create(x, y, text)
     font = love.graphics.getFont() -- Use provided font or default
