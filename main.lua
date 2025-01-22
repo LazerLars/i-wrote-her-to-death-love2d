@@ -1211,7 +1211,7 @@ function ResetGame()
     enemyFunctions.prevSpawnTime = 0
     enemyFunctions.spawnTimeDecliner = 5
     enemyFunctions.prevDecilineTime = 0
-    
+    enemyFunctions.currentTime = 0
     ResetEnemyCounter()
     enemyFunctions.ResetEnemyList()
 

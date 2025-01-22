@@ -4,13 +4,15 @@ local enemySpawnTimer = 5
 local prevSpawnTime = 0
 local spawnTimeDecliner = 5
 local prevDecilineTime = 0
-
+local currentTime = 0
 
 --------------------------
 
 --Adding enemies, used in the upadte function
 function ManageEnemies(player,dt)
-    local currentTime = love.timer.getTime()
+    print(currentTime)
+    -- currentTime =  love.timer.getTime()
+    currentTime = currentTime + dt
         local updatedSpawnTime = false
       
         -- Spawn enemy every nth second
