@@ -10,7 +10,7 @@ currentTime = 0
 
 --Adding enemies, used in the upadte function
 function ManageEnemies(player,dt)
-    print(currentTime)
+    -- print(currentTime)
     -- currentTime =  love.timer.getTime()
     currentTime = currentTime + dt
         local updatedSpawnTime = false

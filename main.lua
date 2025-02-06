@@ -18,6 +18,7 @@ local tippingText_draw_bool = false
 -- Table to hold active text animations
 local textObjects = {}
 
+debug = false
 
 --settings
 -- local screenWidth = 320
@@ -425,10 +426,16 @@ function CheckPlayerCommands()
         player.moveToY = screenHeight
         player.moveToX = screenWidth
     end
-    if string.find(textInput, ":kapow") then
-        enemyFunctions.ResetEnemyList()
-        textObjects_create(16, screenHeight - 14, ":kapow")
+    
+    
+    -- kill all enemies, only allowed in debug mode :D
+    if debug == true then
+        if string.find(textInput, ":kapow") then
+            enemyFunctions.ResetEnemyList()
+            textObjects_create(16, screenHeight - 14, ":kapow")
+        end
     end
+    
 
     if string.find(textInput, ":male") then
         print("changing to male....")
@@ -461,13 +468,12 @@ function CheckPlayerCommands()
         
     end
 
-
     -- NOT IMPLEMENTED YET
     if string.find(textInput, ":the rug really tied the room together") or string.find(textInput, ":easy") then
         print("changing to easy mode....")
     end
 
-    -- NOT IMPLEMENTED YET
+    -- NOT IMPLEMENTED YE½T
     if string.find(textInput, ":just smile and wave boys, just smile an wave") or string.find(textInput, ":medium") then
         print("changing to medium mode....")
     end
