@@ -1219,12 +1219,11 @@ function ResetGame()
     prevDecilineTime = 0
     currentTime = 0.1
     ResetEnemyCounter()
-    enemyFunctions.ResetEnemyList()
-    -- enemyFunctions.enemyList = {}
-    
+    enemyFunctions.ResetEnemyList()    
     enemyCounter = 1
     
-    currentTime = 0
+    heartbeatBPM = 60
+    
 end
 
 -- Function to create the text
