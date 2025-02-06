@@ -20,6 +20,8 @@ local textObjects = {}
 
 debug = false
 
+show_difficulty_mode_text = true
+
 gameDifficulty = "medium"
 --settings
 -- local screenWidth = 320
@@ -116,11 +118,15 @@ local scoreEffect = {
 }
 
 
-show_difficulty_mode_text = true
+
 
 function love.load()
     love.window.setTitle("I WROTE HER TO DEATH")
-
+    
+    love.mouse.setVisible(false)
+    if debug == true then
+        love.mouse.setVisible(true)
+    end
     print("lets go")
     GetAllTextFileNames()
     for index, filename in ipairs(allTextFilesNamesTable) do
@@ -273,7 +279,9 @@ function love.draw()
         love.graphics.rectangle("fill", -player.width / 2, -player.height / 2, player.width, player.height)
         love.graphics.pop()
         --can also draw shapes and get mouse position
-        love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
+        if debug == true then
+            love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 2)
+        end
         
         -- love.graphics.print("Life: " .. player.health, 1,8) -- replace with hearts
         Colors_pico8(9)
@@ -611,9 +619,11 @@ end
 
 
 function love.mousepressed(x, y, button, istouch)
-    if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
-        player.moveToX = maid64.mouse.getX()
-        player.moveToY = maid64.mouse.getY()
+    if debug == true then 
+        if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+            player.moveToX = maid64.mouse.getX()
+            player.moveToY = maid64.mouse.getY()
+        end
     end
 end
 
