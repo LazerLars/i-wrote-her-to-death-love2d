@@ -15,3 +15,4 @@
 :left
 :stop
 :move x,y (move 10,20)
+:get lost (hide game difficulty from play screen)

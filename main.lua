@@ -116,7 +116,7 @@ local scoreEffect = {
 }
 
 
-
+show_difficulty_mode_text = true
 
 function love.load()
     love.window.setTitle("I WROTE HER TO DEATH")
@@ -235,12 +235,13 @@ function love.draw()
        commands_draw()
 
     elseif game.pause == false and game.gameOver == true then
-        print("game over")
+        -- print("game over")
         tippingText_draw()
         textInputElements_draw()
         commands_draw()
         local startPosY = 8
         local startPosX = screenWidth - 200
+        -- draw all game stats after game end
         for key, value in pairs(stats) do
             if key == "playTime" then
                 love.graphics.print(key .. ":" .. string.format("%.2f", value), startPosX, startPosY)
@@ -250,11 +251,22 @@ function love.draw()
             end
             startPosY = startPosY + 14
         end
+        -- draw game mode
+        love.graphics.print("game mode:" .. ":" .. gameDifficulty, startPosX, startPosY)
         
     else
         -- Draw the player with scaling applied for heartbeat effect
         love.graphics.push()
         love.graphics.print(string.format("%.2f", stats.playTime), (screenWidth/2)-(8*3), 8)
+        
+        if show_difficulty_mode_text == true then
+            if gameDifficulty == "medium" then            
+                love.graphics.print(gameDifficulty, (screenWidth/2)-(8*3)-6, 18)
+            elseif gameDifficulty == "easy" or gameDifficulty == "hell" then
+                love.graphics.print(gameDifficulty, (screenWidth/2)-(8*3), 18)
+            end
+        end
+        
 
         love.graphics.translate(player.x + player.width / 2, player.y + player.height / 2) -- Move to center
         love.graphics.scale(heartbeatScale, heartbeatScale) -- Apply heartbeat scaling
@@ -378,6 +390,15 @@ function CheckPlayerCommands()
         textObjects_create(16, screenHeight - 14, ":NEW GAME")
         game.gameOver = false
         ResetGame()
+    end
+    if string.find(textInput, ":get lost") or string.find(textInput, ":new game") then
+        textObjects_create(16, screenHeight - 14, ":get lost")
+        if show_difficulty_mode_text == true then
+            show_difficulty_mode_text = false
+        elseif show_difficulty_mode_text == false then
+            show_difficulty_mode_text = true
+        end
+
     end
 
     if string.find(textInput, ":time") then
