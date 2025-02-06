@@ -1204,17 +1204,21 @@ function ResetGame()
     stats.playTime = 0
     stats.reloadCount = 0
     stats.wrongWords = 0
-    
     player.health = 3
     
-    enemyFunctions.enemySpawnTimer = 5
-    enemyFunctions.prevSpawnTime = 0
-    enemyFunctions.spawnTimeDecliner = 5
-    enemyFunctions.prevDecilineTime = 0
-    enemyFunctions.currentTime = 0
+    
+    enemySpawnTimer = 5
+    prevSpawnTime = 0
+    spawnTimeDecliner = 5
+    prevDecilineTime = 0
+    currentTime = 0.1
     ResetEnemyCounter()
     enemyFunctions.ResetEnemyList()
-
+    -- enemyFunctions.enemyList = {}
+    
+    enemyCounter = 1
+    
+    currentTime = 0
 end
 
 -- Function to create the text

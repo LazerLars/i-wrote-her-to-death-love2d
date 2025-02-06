@@ -1,10 +1,10 @@
 --ENEMY SETTINGS
 enemyList = {}
-local enemySpawnTimer = 5
-local prevSpawnTime = 0
-local spawnTimeDecliner = 5
-local prevDecilineTime = 0
-local currentTime = 0
+enemySpawnTimer = 5
+prevSpawnTime = 0
+spawnTimeDecliner = 5
+prevDecilineTime = 0
+currentTime = 0
 
 --------------------------
 
