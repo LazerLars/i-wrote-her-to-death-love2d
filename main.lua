@@ -20,6 +20,7 @@ local textObjects = {}
 
 debug = false
 
+gameDifficulty = "medium"
 --settings
 -- local screenWidth = 320
 screenWidth = 480
@@ -471,16 +472,29 @@ function CheckPlayerCommands()
     -- NOT IMPLEMENTED YET
     if string.find(textInput, ":the rug really tied the room together") or string.find(textInput, ":easy") then
         print("changing to easy mode....")
+        textObjects_create(16, screenHeight - 14, ":EASY MODE ACTIVATED")
+        game.gameOver = false
+        ResetGame()
+        game_difficulty_easy()
+
     end
 
     -- NOT IMPLEMENTED YE½T
     if string.find(textInput, ":just smile and wave boys, just smile an wave") or string.find(textInput, ":medium") then
         print("changing to medium mode....")
+        textObjects_create(16, screenHeight - 14, ":MEDIUM MODE ACTIVATED")
+        game.gameOver = false
+        ResetGame()
+        game_difficulty_easy()
     end
 
     -- NOT IMPLEMENTED YET
     if string.find(textInput, ":english mother fucker do you speak it") or string.find(textInput, ":hell")  then
         print("changing to hard mode....")
+        textObjects_create(16, screenHeight - 14, ":HELL MODE ACTIVATED")
+        game.gameOver = false
+        ResetGame()
+        game_diffuculty_hell()
     end
 end
 
@@ -1357,4 +1371,40 @@ function textObjects_draw()
         love.graphics.print(textObject.text, textObject.x, textObject.y)
     end
     
+end
+
+function game_difficulty_easy()
+    -- // EASY //
+    enemySpawnTimer = 8
+    prevSpawnTime = 0
+    spawnTimeDecliner = 8
+    prevDecilineTime = 0
+    currentTime = 0
+    shortestAllowedSpawnInterval = 0.5
+    enemySpawnTimerInvervalDelinceAmount = 0.1
+    gameDifficulty = "easy"
+end
+
+function game_difficulty_medium()
+    -- default // MEDIUM //
+    enemySpawnTimer = 5
+    prevSpawnTime = 0
+    spawnTimeDecliner = 5
+    prevDecilineTime = 0
+    currentTime = 0
+    shortestAllowedSpawnInterval = 0.5
+    enemySpawnTimerInvervalDelinceAmount = 0.2
+    gameDifficulty = "medium"
+end
+
+function game_diffuculty_hell()
+    -- // HELL //
+    enemySpawnTimer = 5
+    prevSpawnTime = 0
+    spawnTimeDecliner = 5
+    prevDecilineTime = 0
+    currentTime = 0
+    shortestAllowedSpawnInterval = 0.5
+    enemySpawnTimerInvervalDelinceAmount = 0.35
+    gameDifficulty = "hell"
 end
